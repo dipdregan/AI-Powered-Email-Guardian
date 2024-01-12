@@ -4,4 +4,3 @@ venv
 *archive (4)
 *.zip
 *.ipynb_checkpoints
-*research

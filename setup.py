@@ -25,7 +25,7 @@ setuptools.setup(
     "Bug Tracker": f"https://github.com/{AUTHOR_NAME}/{REPO_NAME}/issues",  
                   
                  },
-    package_dir={"":"CNN_Classifier"},
-    packages=setuptools.find_packages(where="CNN_Classifier"),
+    package_dir={"":"src"},
+    packages=setuptools.find_packages(where="src"),
     
 )

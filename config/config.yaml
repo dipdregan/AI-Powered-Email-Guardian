@@ -1,0 +1,5 @@
+Data_Api: "kaggle datasets download -d uciml/sms-spam-collection-dataset"
+
+columns:
+  feature: "Text_Message"
+  Label: "Target"

@@ -11,7 +11,7 @@ CONFIG_FILE_NAME:str = 'config.yaml'
 CONFIG_FILE_PATH:Path = os.path.join(ROOT_DIR, CONFIG_DIR_NAME, CONFIG_FILE_NAME)
 
 CONFIG_FILE = read_yaml_file(CONFIG_FILE_PATH)
-print(CONFIG_FILE)
+# print(CONFIG_FILE)
 
 # Data Ingestion Related Constants
 Data_API: str = CONFIG_FILE['Data_Api']

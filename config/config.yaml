@@ -1,5 +1,13 @@
 Data_Api: "kaggle datasets download -d uciml/sms-spam-collection-dataset"
 
-columns:
+columns_name:
   feature: "Text_Message"
-  Label: "Target"
+  label: "Target"
+
+columns:
+      - Text_Message
+      - Target
+
+columns_data_type:
+      Text_Message: 'object'
+      Target: 'object'

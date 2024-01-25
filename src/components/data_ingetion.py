@@ -50,7 +50,6 @@ class DataIngestion:
             return unzip_dir
         except Exception as e:
             raise ham_spam(e, sys) from e
-
         
     def initiate_data_ingestion(self)->DataIngestionArtifact:
         try:
@@ -75,7 +74,7 @@ class DataIngestion:
                 unzip_data_file_path=unzip_file_path,
                 zip_data_file_path=zip_file_path
             )
-
+            print(data_ingestion_artifact)
             return data_ingestion_artifact
         except Exception as e:
             raise ham_spam(e, sys) from e

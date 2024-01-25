@@ -46,3 +46,24 @@ def write_json(data, file_path):
             json.dump(data, file, indent=2)
     except Exception as e:
         raise ValueError(f"Error writing JSON to file: {file_path}. {str(e)}")
+
+
+import pickle
+
+def read_pickle(file_path):
+    """Read a pickle file."""
+    try:
+        with open(file_path, 'rb') as file:
+            data = pickle.load(file)
+        return data
+    except Exception as e:
+        raise ValueError(f"Error reading pickle file: {e}")
+
+def write_pickle(data, file_path):
+    """Write data to a pickle file."""
+    try:
+        with open(file_path, 'wb') as file:
+            pickle.dump(data, file)
+    except Exception as e:
+        raise ValueError(f"Error writing to pickle file: {e}")
+

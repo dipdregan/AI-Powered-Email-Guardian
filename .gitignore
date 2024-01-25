@@ -4,3 +4,9 @@ venv
 *archive (4)
 *.zip
 *.ipynb_checkpoints
+*.egg-info
+*.pyc
+*.log
+*.csv
+*.json
+*.csv

@@ -7,3 +7,9 @@ seaborn
 scikit-learn
 nltk
 wordcloud
+tensorflow-cpu
+pyYAML
+types-PyYAML
+
+# tensorflow
+-e .

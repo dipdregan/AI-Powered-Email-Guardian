@@ -60,7 +60,8 @@ class DataValidation:
         except Exception as e:
             raise ham_spam(sys,e) from e
  
-
+  
+  
     def _save_data(self, df: pd.DataFrame, save_path: str) -> None:
         """Save data to a file."""
         df.to_csv(save_path, index=False)

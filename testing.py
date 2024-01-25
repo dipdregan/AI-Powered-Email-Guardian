@@ -28,3 +28,4 @@ obj.initiate_data_validation()
 # # print(config.__dict__)
 # obj = DataIngestion(data_ingestion_config=config)
 # obj.initiate_data_ingestion()
+sd

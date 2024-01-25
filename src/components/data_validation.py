@@ -37,24 +37,29 @@ class DataValidation:
 
     
     def validate_dataframe_with_config(self,df):
+        try:
+            is_valid_columns = set(df.columns) == set(self.expected_columns)
+            
+            error_message = ''
+            if not is_valid_columns:
+                error_message = f"Column name validation failed. Unexpected columns found."
+                logging.info("Column name validation failed. Unexpected columns found.")
 
-        expected_columns = read_yaml_file(CONFIG_FILE_PATH)['columns_data_type']
-        logging.info(expected_columns)
-        is_valid_columns = set(df.columns) == set(self.expected_columns)
-        logging.info(set(df.columns),set(self.expected_columns))
-        if not is_valid_columns:
-            print("Column name validation failed. Unexpected columns found.")
-
-        # # Data type validation
-        # is_valid_data_types = True
-        # for column, expected_dtype in self.data_types.items():
-        #     actual_dtype = df[column].dtype
-        #     if actual_dtype != expected_dtype:
-        #         print(f"Data type validation failed for column '{column}': Expected {expected_dtype}, but got {actual_dtype}")
-        #         is_valid_data_types = False
-
-        return is_valid_columns 
-    # and is_valid_data_types
+            else :
+                logging.info(f"<<<<<<<<<<<=========   Column name validation succesfully completed   ======>>>>>>>")
+                is_valid_data_types = True
+                for column, dtype in self.data_types.items():
+                    actual_dtype = df[column].dtype
+                    if actual_dtype != dtype:
+                        logging.info(f"Data type validation failed for column '{column}'==> Expected: {actual_dtype}, but got :{dtype} ")
+                        error_message = f"Data type validation failed for column '{column}'==> Expected: {actual_dtype}, but got :{dtype} "
+                        is_valid_data_types = False
+                        
+            return is_valid_data_types,error_message
+        
+        except Exception as e:
+            raise ham_spam(sys,e) from e
+ 
 
     def _save_data(self, df: pd.DataFrame, save_path: str) -> None:
         """Save data to a file."""
@@ -87,65 +92,39 @@ class DataValidation:
         df = self._read_data(file_path)
         logging.info(f"\n:{df.head()}")
 
-        validation_rules_config = read_yaml_file(CONFIG_FILE_PATH)['columns_data_type']
-        validation_dtype = {column: dtype for column, dtype in validation_rules_config.items()}
-        logging.info(validation_dtype)
-        self.validate_dataframe_with_config(df)
-        # Validating data and handle invalidated data
-        # invalidated_data, validated_data = 
-        # logging.info(invalidated_data)
-        # logging.info(validated_data)
-        # if not validated_data.empty:
-        #     # Save validated data
-        #     os.makedirs(Config.data_validation_validate_path,exist_ok=True)
-        #     validated_data_path = os.path.join(Config.data_validation_dir,
-        #                                        Config.valide_data_file_name)
-        #     logging.info(f"Validated data saved to: {validated_data_path}")
-        # else:
-        #     logging.info("No validated data to save.")
-        # if not invalidated_data.empty:
-        #     os.makedirs(Config.data_validation_invalidate_path,exist_ok=True)
-        #     invalidated_data_path = os.path.join(
-        #         Config.data_validation_invalidate_path,
-        #         Config.invalide_data_file_name
-        #     )
-        #     self._save_data(df = invalidated_data,save_path=invalidated_data_path)
-        #     logging.info(f"Invalidated data saved to: {invalidated_data_path}")
-        # else:
-        #     logging.info("No invalidated data to save.")
+        data_validation ,error = self.validate_dataframe_with_config(df)
 
-        #     # Generate and save validation report
-        #     validation_report = self._generate_validation_report(validation_result=True)
-        #     write_json(validation_report, report_file_path)
-        #     logging.info(f"Validation report saved to: {report_file_path}")
+        if data_validation:
+            os.makedirs(Config.data_validation_validate_path,exist_ok=True)
+            validated_data_path = os.path.join(Config.data_validation_validate_path,
+                                               Config.valide_data_file_name)
+            self._save_data(df,validated_data_path)
+            logging.info(f"Validated data saved to: {validated_data_path}")
 
+        else:
+            os.makedirs(Config.data_validation_invalidate_path,exist_ok=True)
+            invalidated_data_path = os.path.join(Config.data_validation_invalidate_path,
+                                               Config.invalide_data_file_name)
+            self._save_data(df,invalidated_data_path)
+            logging.info(f"Validated data saved to: {invalidated_data_path}")
 
-        #     data_validation_artifact = DataValidationArtifact(
-        #         validated_data_path=validated_data_path if not validated_data.empty else None,
-        #         invalidated_data_path=invalidated_data_path if not invalidated_data.empty else None,
-        #         validation_report_path=report_file_path
-        #     )
+        # Generate and save validation report
+        validation_report = self._generate_validation_report(validation_result=data_validation ,
+                                                             error_message=error)
+        write_json(validation_report, report_file_path)
+        logging.info(f"Validation report saved to: {report_file_path}")
 
-        #     logging.info(f"{30 * '===='}")
-        #     logging.info(f"{10 * '=='}Data Validation Completed...{10 * '=='}")
-        #     logging.info(f"{30 * '===='}")
+        
+        data_validation_artifact = DataValidationArtifact(
+            validated_data_path=validated_data_path if data_validation else None,
+            invalidated_data_path=invalidated_data_path if not data_validation else None,
+            validation_report_path=report_file_path
+        )
 
-        #     return data_validation_artifact
+        logging.info(f"{30 * '===='}")
+        logging.info(f"{10 * '=='}Data Validation Completed...{10 * '=='}")
+        logging.info(f"{30 * '===='}")
+        logging.info(data_validation_artifact)
 
-        # # # except Exception as e:
-        # # #     validation_result = False
-        # # #     exc_info = sys.exc_info()
-
-        # # #     # Handle KeyError specifically
-        # # #     if isinstance(e, KeyError):
-        # # #         error_message = f"KeyError occurred: {str(e)}"
-        # # #     else:
-        # # #         error_message = str(e)
-
-        # # #     # Generate and save validation report with error message
-        # # #     validation_report = self._generate_validation_report(validation_result=validation_result, error_message=error_message)
-        # # #     write_json(validation_report, report_file_path)
-        # # #     logging.info(f"Validation report saved to: {report_file_path}")
-
-        # # #     raise ham_spam(error_message, sys) from e
+        return data_validation_artifact
 

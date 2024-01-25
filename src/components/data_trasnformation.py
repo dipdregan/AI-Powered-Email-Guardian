@@ -15,8 +15,9 @@ from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 
-# nltk.download('punkt')
-
+nltk.download('punkt')
+nltk.download('stopwords')
+nltk.download('wordnet')
 
 class DataTransformation:
     def __init__(self, data_transformation_config: DataTransformationConfig,
@@ -55,7 +56,7 @@ class DataTransformation:
             text = re.sub(r'\b{}\b'.format(re.escape(short_form)), full_form, text)
 
         text = emoji_pattern.sub(r'', text)
-        # text = re.sub(r'[^a-zA-Z0-9\s]', '', text)
+        text = re.sub(r'[^a-zA-Z0-9\s]', '', text)
 
         stop_words = set(stopwords.words('english'))
         

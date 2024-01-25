@@ -10,6 +10,7 @@ wordcloud
 tensorflow-cpu
 pyYAML
 types-PyYAML
+kaggle
 
 # tensorflow
 -e .

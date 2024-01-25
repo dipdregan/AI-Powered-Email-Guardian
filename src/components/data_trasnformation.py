@@ -17,11 +17,10 @@ from nltk.stem import WordNetLemmatizer
 
 # nltk.download('punkt')
 
-
 class DataTransformation:
     def __init__(self, data_transformation_config: DataTransformationConfig,
                  data_validation_artifact: DataValidationArtifact):
-        self.data_transformation_config = data_transformation_config
+        self.config = data_transformation_config
         self.data_validation_artifact = data_validation_artifact
 
     def _read_data(self, file_path: str) -> pd.DataFrame:
@@ -75,7 +74,8 @@ class DataTransformation:
         df[column] = df[column].apply(self._preprocess_text)
 
         return df
-
+    
+    ## this method we put inside the utils fuction because we are use this method multiple times
     def _save_transformed_data(self, df: pd.DataFrame, save_path: str) -> None:
         df.to_csv(save_path, index=False)
         logging.info(f"Saving the Transformed data to: {save_path}")
@@ -88,15 +88,15 @@ class DataTransformation:
 
         # df = self._read_data(self.data_validation_artifact.validated_data_path)
         df = self._read_data(self.data_validation_artifact)
+        
         df = self._label_encode_target(df)
-        logging.info(f"Data :\n {df.head()}")
         df = self._remove_duplicates(df)
-
+       
         df = self._preprocess_text_column(df, 'Text_Message')
-
-        os.makedirs(self.data_transformation_config.data_transformation_dir, exist_ok=True)
-        transformed_data_path = os.path.join(self.data_transformation_config.data_transformation_dir,
-                                            self.data_transformation_config.data_transformation_file_name)
+        logging.info(f"Data :\n {df.head()}")
+        os.makedirs(self.config.data_transformation_dir, exist_ok=True)
+        transformed_data_path = os.path.join(self.config.data_transformation_dir,
+                                            self.config.data_transformation_file_name)
         self._save_transformed_data(df, transformed_data_path)
 
 

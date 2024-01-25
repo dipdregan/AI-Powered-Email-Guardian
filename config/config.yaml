@@ -10,4 +10,4 @@ columns:
 
 columns_data_type:
       Text_Message: 'object'
-      Target: 'object'
+      Target: 'int'

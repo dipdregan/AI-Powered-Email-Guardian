@@ -10,7 +10,7 @@ config = DataValidationConfig(
     root_dir=RootConfig()
 )
 # print(config.__dict__)
-data_ingestion_artifact = r"F:\End_To_End_project\Ham_Spam_Classifier(ETE)\artifact\01_23_2024_22_49_03\data_ingetion\unzip_data"
+data_ingestion_artifact = r"artifact\01_23_2024_22_49_03\data_ingetion\unzip_data"
 obj = DataValidation(data_validation_config=config,
                      data_ingestion_artifact=data_ingestion_artifact)
 obj.initiate_data_validation()

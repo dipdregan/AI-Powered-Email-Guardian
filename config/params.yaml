@@ -1,0 +1,14 @@
+model_name: 'model.h5'
+training_history: 'training_history.json'
+model_params:
+  data_processing:
+    max_words: 1000
+    max_sequence_length: 30
+  model_training:
+    epochs: 10 
+    batch_size: 32
+    activation: 'sigmoid'
+    optimizer: 'adam'
+    loss: 'binary_crossentropy'
+    validation_split: 0.1
+    patience: 3

@@ -55,7 +55,24 @@ class DataTransformationConfig:
         self.data_transformation_dir:str = os.path.join(root_dir.artifact_dir,
                                                         DATA_TRANSFORMATION_DIR_NAME)
         
-        self.data_transformation_file_name:str = DATA_TRANSFORMATION_FILE_NAME
+        self.transform_dir_path:str = os.path.join(self.data_transformation_dir,
+                                                   TRASNFORM_DATA_DIR_NAME)
+        self.trasnform_data_file_name:str = TRANSFORM_DATA_FILE_NAME
+
+        self.train_test_file_path:str = os.path.join(self.data_transformation_dir,
+                                                  SPLITTED_DATA_DIR)
+
+class ModelTrainerConfig:
+        
+    def __init__(self, root_dir:RootConfig):
+        self.model_trainer_dir : str = os.path.join(root_dir.artifact_dir, MODEL_TRAINER)
+        self.model_dir:str = os.path.join(self.model_trainer_dir,MODEL_DIR) 
+        self.model_file_name:str = MODEL_NAME
+        self.training_history_dir = os.path.join(self.model_trainer_dir,
+                                                 TRAINING_HISTORY_DIR)
+        self.training_history_file_name = TRAINING_HISTORY_FILE_NAME
+        self.params = PARAMS_FILE
+        
         
 
 # if __name__ =="__main__":

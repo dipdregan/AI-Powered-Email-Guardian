@@ -1,8 +1,9 @@
 from src.entity.artifact_entity import DataValidationArtifact, DataTransformationArtifact
+from sklearn.model_selection import train_test_split
 from src.entity.config_entity import DataTransformationConfig
 from src.exception import ham_spam
 from src.logger import logging
-from src.constant.constants import TARGET_NAME,FEATURES_NAME
+from src.constant.constants import *
 import os
 import sys
 import pandas as pd
@@ -14,15 +15,19 @@ import re
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
+from collections import Counter
+from nltk.stem import SnowballStemmer
 
 
 # nltk.download('punkt')
+# nltk.download('stopwords')
+# nltk.download('wordnet')
 
 
 class DataTransformation:
     def __init__(self, data_transformation_config: DataTransformationConfig,
                  data_validation_artifact: DataValidationArtifact):
-        self.data_transformation_config = data_transformation_config
+        self.config = data_transformation_config
         self.data_validation_artifact = data_validation_artifact
 
     def _read_data(self, file_path: str) -> pd.DataFrame:
@@ -60,9 +65,9 @@ class DataTransformation:
 
         stop_words = set(stopwords.words('english'))
         
-        lemmatizer = WordNetLemmatizer()
+        stemmer = SnowballStemmer("english")
         
-        words = [lemmatizer.lemmatize(word) for word in word_tokenize(text) if word.lower() not in stop_words]
+        words = [stemmer.stem(word) for word in word_tokenize(text) if word.lower() not in stop_words]
         
         return ' '.join(words)
 
@@ -76,6 +81,7 @@ class DataTransformation:
         df[column] = df[column].apply(self._preprocess_text)
 
         return df
+   
 
     def _save_transformed_data(self, df: pd.DataFrame, save_path: str) -> None:
         df.to_csv(save_path, index=False)
@@ -93,20 +99,34 @@ class DataTransformation:
         logging.info(f"Data :\n {df.head()}")
         df = self._remove_duplicates(df)
 
-        df = self._preprocess_text_column(df, 'Text_Message')
+        df = self._preprocess_text_column(df, FEATURES_NAME)
+        data = df.dropna(subset=[FEATURES_NAME])
 
-        os.makedirs(self.data_transformation_config.data_transformation_dir, exist_ok=True)
-        transformed_data_path = os.path.join(self.data_transformation_config.data_transformation_dir,
-                                            self.data_transformation_config.data_transformation_file_name)
-        self._save_transformed_data(df, transformed_data_path)
+        os.makedirs(self.config.transform_dir_path, exist_ok=True)
+        transformed_data_path = os.path.join(self.config.transform_dir_path,
+                                            self.config.trasnform_data_file_name)
+        self._save_transformed_data(data, transformed_data_path)
 
+  
+        train_data,test_data = train_test_split(data, test_size=TEST_SET_SIZE, random_state=RANDOM_STATE)
+
+        train_test_file_dir = self.config.train_test_file_path
+        os.makedirs(train_test_file_dir, exist_ok= True)
+
+        train_file_path = os.path.join(train_test_file_dir,TRAIN_FILE_NAME)
+        test_file_path = os.path.join(train_test_file_dir,TEST_FILE_NAME)
+
+        self._save_transformed_data(train_data,train_file_path)
+        self._save_transformed_data(test_data,test_file_path)
 
         logging.info(f"{30*'===='}")
         logging.info(f"{10*'=='}Data Transformation Completed...{10*'=='}")
         logging.info(f"{30*'===='}")
 
         data_transformation_artifact = DataTransformationArtifact(
-            data_transformation_path=transformed_data_path
+            data_transformation_path=transformed_data_path,
+            train_file_path = train_file_path,
+            test_file_path = test_file_path,
         )
 
         return data_transformation_artifact

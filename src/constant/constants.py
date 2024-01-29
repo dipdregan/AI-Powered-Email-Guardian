@@ -7,10 +7,13 @@ ARTIFACT_DIR:str = "artifact"
 
 CONFIG_DIR_NAME:str = 'config'
 CONFIG_FILE_NAME:str = 'config.yaml'
+PARAMS_FILE_NAME:str = 'params.yaml'
 
 CONFIG_FILE_PATH:Path = os.path.join(ROOT_DIR, CONFIG_DIR_NAME, CONFIG_FILE_NAME)
+PARAMS_FILE_PATH:Path = os.path.join(ROOT_DIR, CONFIG_DIR_NAME, PARAMS_FILE_NAME)
 
 CONFIG_FILE = read_yaml_file(CONFIG_FILE_PATH)
+PARAMS_FILE= read_yaml_file(PARAMS_FILE_PATH)
 # print(CONFIG_FILE)
 
 # Data Ingestion Related Constants
@@ -41,4 +44,23 @@ DATA_VALIDATION_REPORT_FILE_NAME:str = "report.json"
 Data Transformation realted contant start with DATA_TRANSFORMATION VAR NAME
 """
 DATA_TRANSFORMATION_DIR_NAME:str = "data_transformation"
-DATA_TRANSFORMATION_FILE_NAME:str = "transform_data.csv"
+TRASNFORM_DATA_DIR_NAME:str = "transform_data"
+TRANSFORM_DATA_FILE_NAME:str = "transform_data.csv"
+SPLITTED_DATA_DIR:str = "train_test_data"
+
+TEST_SET_SIZE:float=0.2
+RANDOM_STATE:int=42
+TRAIN_FILE_NAME:str = "train.csv"
+TEST_FILE_NAME:str = "test.csv"
+
+
+"""
+Model_Trainer Related constant
+"""
+MODEL_TRAINER:str = "model_trainer"
+MODEL_DIR:str ="model"
+MODEL_NAME:str = PARAMS_FILE['model_name']
+
+TRAINING_HISTORY_DIR:str = "training_report"
+TRAINING_HISTORY_FILE_NAME:str = PARAMS_FILE['training_history']
+

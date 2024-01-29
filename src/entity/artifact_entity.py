@@ -15,4 +15,11 @@ class DataValidationArtifact:
 
 @dataclass
 class DataTransformationArtifact:
-    data_transformation_path:Path
+    # data_transformation_path:Path
+    train_file_path:Path
+    test_file_path:Path
+
+@dataclass
+class ModelTrainerArtifact:
+    model_file_path:Path
+    training_report_file_path:Path

@@ -8,5 +8,10 @@ venv
 *.pyc
 *.log
 *.csv
+mlruns
+mlruns/
+*.h5
+/mlruns
+
 *.json
 *.csv

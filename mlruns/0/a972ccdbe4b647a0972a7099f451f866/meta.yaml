@@ -1,0 +1,15 @@
+artifact_uri: file:///F:/End_To_End_project/Ham_Spam_Classifier%28ETE%29/mlruns/0/a972ccdbe4b647a0972a7099f451f866/artifacts
+end_time: 1706568492431
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: a972ccdbe4b647a0972a7099f451f866
+run_name: bold-fish-694
+run_uuid: a972ccdbe4b647a0972a7099f451f866
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1706568492353
+status: 4
+tags: []
+user_id: lenovo

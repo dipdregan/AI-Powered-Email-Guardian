@@ -1,0 +1,15 @@
+artifact_uri: file:///F:/End_To_End_project/Ham_Spam_Classifier%28ETE%29/mlruns/0/1b78c8a5207d4bc08bc53eb6219b09cf/artifacts
+end_time: 1706568176677
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 1b78c8a5207d4bc08bc53eb6219b09cf
+run_name: auspicious-midge-515
+run_uuid: 1b78c8a5207d4bc08bc53eb6219b09cf
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1706568176474
+status: 3
+tags: []
+user_id: lenovo

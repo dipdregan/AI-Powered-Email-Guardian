@@ -1,0 +1,15 @@
+artifact_uri: file:///F:/End_To_End_project/Ham_Spam_Classifier%28ETE%29/mlruns/0/e00d5524101845c0b30fd70e7e309550/artifacts
+end_time: 1706568492493
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: e00d5524101845c0b30fd70e7e309550
+run_name: amazing-conch-78
+run_uuid: e00d5524101845c0b30fd70e7e309550
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1706568492446
+status: 3
+tags: []
+user_id: lenovo

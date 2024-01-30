@@ -1,0 +1,15 @@
+artifact_uri: file:///F:/End_To_End_project/Ham_Spam_Classifier%28ETE%29/mlruns/0/c6e2a90597ee4b77a2ed6e813e808827/artifacts
+end_time: 1706568176776
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: c6e2a90597ee4b77a2ed6e813e808827
+run_name: grandiose-loon-42
+run_uuid: c6e2a90597ee4b77a2ed6e813e808827
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1706568176709
+status: 3
+tags: []
+user_id: lenovo

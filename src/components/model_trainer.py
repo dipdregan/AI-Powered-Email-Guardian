@@ -140,7 +140,8 @@ class ModelTrainer:
                 model_file_path=model_file_path,
                 training_report_file_path = history_log_path
                 )
-            return model_trainer_artifact
+            logging.info(model_trainer_artifact)
+            return model_trainer_artifact,history
         except Exception as e:
             raise ham_spam(sys,e) from e
             

@@ -23,3 +23,8 @@ class DataTransformationArtifact:
 class ModelTrainerArtifact:
     model_file_path:Path
     training_report_file_path:Path
+@dataclass
+class ModelEvaluatorArtifact:
+    accepted_model_path:Path
+    rejected_model_path:Path
+    evaluation_report_path:Path

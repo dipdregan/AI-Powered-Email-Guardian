@@ -73,6 +73,19 @@ class ModelTrainerConfig:
         self.training_history_file_name = TRAINING_HISTORY_FILE_NAME
         self.params = PARAMS_FILE
         
+
+class ModelEvaluatorConfig:
+    def __init__(self, root_dir: RootConfig):
+        self.model_evaluator_dir = os.path.join(MODEL_EVALUATOR_DIR_NAME)  
+        
+        self.accepted_model = os.path.join(self.model_evaluator_dir,
+                                           ACCEPTED_MODEL_DIR) 
+        
+        self.rejected_model = os.path.join(self.model_evaluator_dir, 
+                                          REJECTED_MODEL_DIR)
+        
+        self.evaluation_report = os.path.join(self.model_evaluator_dir,
+                                              EVALUATION_REPORT)
         
 
 # if __name__ =="__main__":

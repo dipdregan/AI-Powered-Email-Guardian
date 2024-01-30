@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spam/Ham Prediction</title>
+    <style>
+        body {
+            background-color: #1f1f1f;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+
+        textarea {
+            width: 80%;
+            height: 100px;
+            resize: none;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #4caf50;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #333;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .footer img {
+            width: 30px;
+            margin: 0 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Spam/Ham Prediction</h1>
+    <form action="/" method="post">
+        <label for="message">Enter your message:</label><br>
+        <textarea id="message" name="message" required></textarea><br>
+        <button type="submit">Predict</button>
+    </form>
+    <div id="result">
+        {% if prediction %}
+            <p>Prediction: {{ prediction }}</p>
+        {% endif %}
+    </div>
+    <div class="footer">
+        <a href="https://www.linkedin.com/" target="_blank"><img src="{{ url_for('static', filename='linkedin.png') }}" alt="LinkedIn"></a>
+        <a href="https://github.com/" target="_blank"><img src="{{ url_for('static', filename='github.png') }}" alt="GitHub"></a>
+    </div>
+</body>
+</html>

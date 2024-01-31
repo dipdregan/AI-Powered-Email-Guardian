@@ -7,11 +7,9 @@ __version__ = "0.0.0"
 
 REPO_NAME="Ham_Spam_Classifier(ETE)"
 AUTHOR_NAME="dipdregan"
-SRC_REPO="src"
 AUTHOR_Email="dipendrapratap155@gmail.com"
 
 setuptools.setup(
-    name=SRC_REPO,
     version=__version__,
     author=AUTHOR_NAME,
     author_email=AUTHOR_Email,

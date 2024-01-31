@@ -1,0 +1,52 @@
+stages:
+  data_ingestion:
+    cmd: python src/pipeline/main_pipeline.py start_data_ingestion
+    deps:
+      - src/components/data_ingetion.py
+      - src/entity/config_entity.py
+      - src/entity/artifact_entity.py
+      - src/logger.py
+      - src/exception.py
+    outs:
+      - artifact/{{"timestamp"|timestampformat}}/data_ingestion_artifact/zip_data_file_path.zip
+      - artifact/{{"timestamp"|timestampformat}}/data_ingestion_artifact/unzip_data_file_path
+
+  data_validation:
+    cmd: python src/pipeline/main_pipeline.py start_data_validation
+    deps:
+      - src/components/data_validation.py
+      - src/entity/config_entity.py
+      - src/entity/artifact_entity.py
+      - src/logger.py
+      - src/exception.py
+    outs:
+      - artifact/{{"timestamp"|timestampformat}}/data_validation_artifact/validated_data_path.csv
+      - artifact/{{"timestamp"|timestampformat}}/data_validation_artifact/invalidated_data_path.csv
+      - artifact/{{"timestamp"|timestampformat}}/data_validation_artifact/validation_report_path.txt
+
+  data_transformation:
+    cmd: python src/pipeline/main_pipeline.py start_data_transformation
+    deps:
+      - src/components/data_transformation.py
+      - src/entity/config_entity.py
+      - src/entity/artifact_entity.py
+      - src/logger.py
+      - src/exception.py
+    outs:
+      - artifact/{{"timestamp"|timestampformat}}/data_transformation_artifact/data_transformation_path.csv
+      - artifact/{{"timestamp"|timestampformat}}/data_transformation_artifact/feature_data_file_path.csv
+      - artifact/{{"timestamp"|timestampformat}}/data_transformation_artifact/label_data_file_path.csv
+      - artifact/{{"timestamp"|timestampformat}}/data_transformation_artifact/preprocess_file_path.txt
+
+  model_training:
+    cmd: python src/pipeline/main_pipeline.py start_model_trainer
+    deps:
+      - components/model_trainer.py
+      - entity/artifact_entity.py
+      - entity/config_entity.py
+      - logger.py
+      - exception.py
+    outs:
+      - artifact/{{"timestamp"|timestampformat}}/model_training_artifact/model_file_path.pkl
+      - artifact/{{"timestamp"|timestampformat}}/model_training_artifact/training_report_file_path.txt
+      - artifact/{{"timestamp"|timestampformat}}/model_training_artifact/training_report_graph.png

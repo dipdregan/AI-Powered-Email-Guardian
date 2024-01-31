@@ -3,14 +3,20 @@ training_history: 'training_history.json'
 accuracy_threshold: .85
 model_params:
   data_processing:
-    max_words: 1000
-    max_sequence_length: 30
+    max_words: 6000
+    max_sequence_length: 60
+
   model_training:
-    epochs: 10 
+    epochs: 30
     batch_size: 32
-    activation: 'sigmoid'
+    out_put_activation: 'sigmoid'
+    hidden_activation: 'relu'
+    dropout: 0.2
     optimizer: 'adam'
     loss: 'binary_crossentropy'
     validation_split: 0.1
     patience: 3
+    embedding_dim: 50
+    nurons_unit: 64
+ 
   

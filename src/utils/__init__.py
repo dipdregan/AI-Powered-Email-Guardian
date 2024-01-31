@@ -12,6 +12,10 @@ from src.constant.short_form import short_forms
 import re
 from nltk.tokenize import word_tokenize
 import nltk
+import numpy as np
+from sklearn.model_selection import train_test_split
+from src.constant.constants import *
+import pickle
 
 # nltk.download('punkt')
 # nltk.download('stopwords')
@@ -65,34 +69,16 @@ def write_json(data, file_path):
         raise ValueError(f"Error writing JSON to file: {file_path}. {str(e)}")
 
 
-import pickle
+def save_tokenizer(tokenizer, filename='tokenizer.pkl'):
+    with open(filename, 'wb') as tokenizer_file:
+        pickle.dump(tokenizer, tokenizer_file)
+    print(f'Tokenizer saved to {filename}')
 
-def read_pickle(file_path):
-    """Read a pickle file."""
-    try:
-        with open(file_path, 'rb') as file:
-            data = pickle.load(file)
-        return data
-    except Exception as e:
-        raise ValueError(f"Error reading pickle file: {e}")
-
-def write_pickle(data, file_path):
-    """Write data to a pickle file."""
-    try:
-        with open(file_path, 'wb') as file:
-            pickle.dump(data, file)
-    except Exception as e:
-        raise ValueError(f"Error writing to pickle file: {e}")
-
-
-def write_pickle(data, file_path):
-    """Write data to a pickle file."""
-    try:
-        with open(file_path, 'wb') as file:
-            pickle.dump(data, file)
-    except Exception as e:
-        raise ValueError(f"Error writing to pickle file: {e}")
-
+def load_tokenizer(filename='tokenizer.pkl'):
+    with open(filename, 'rb') as tokenizer_file:
+        loaded_tokenizer = pickle.load(tokenizer_file)
+    print(f'Tokenizer loaded from {filename}')
+    return loaded_tokenizer
 
 def load_data(test_data_path,feature_name,target):
     try:
@@ -102,17 +88,9 @@ def load_data(test_data_path,feature_name,target):
     except Exception as e:
         raise ham_spam(e) from e
 
-def preprocess_data(feature,max_words=100,max_sequence_length=30):
-    try:
-        tokenizer = Tokenizer(num_words=max_words, oov_token="null")
-        tokenizer.fit_on_texts(feature)
-        test_sequences = tokenizer.texts_to_sequences(feature)
-        feature_padded = pad_sequences(test_sequences, maxlen=max_sequence_length,
-                                    padding='post', truncating='post')
-        return feature_padded
-    except Exception as e:
-        raise ham_spam(e) from e
-    
+def save_data(df: pd.DataFrame, save_path: str) -> None:
+    df.to_csv(save_path, index=False)
+
 def data_cleaning(text: str) -> str:
     """
     Preprocess the input text:
@@ -126,8 +104,9 @@ def data_cleaning(text: str) -> str:
     text = text.lower()
     for short_form, full_form in short_forms.items():
         text = re.sub(r'\b{}\b'.format(re.escape(short_form)), full_form, text)
+        
     text = emoji_pattern.sub(r'', text)
-    # text = re.sub(r'[^a-zA-Z0-9\s]', '', text)
+    text = re.sub(r'[^a-zA-Z0-9\s]', '', text)
     stop_words = set(stopwords.words('english'))
     
     stemmer = SnowballStemmer("english")
@@ -136,3 +115,10 @@ def data_cleaning(text: str) -> str:
     
     return ' '.join(words)
 
+def load_and_split_data(X,y):
+    features = np.load(X)
+    labels = np.load(y)
+    X_train, X_test, y_train, y_test = train_test_split(features, labels,
+                                                        test_size=0.2,
+                                                        random_state=42)
+    return X_train, X_test, y_train, y_test

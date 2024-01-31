@@ -46,12 +46,16 @@ Data Transformation realted contant start with DATA_TRANSFORMATION VAR NAME
 DATA_TRANSFORMATION_DIR_NAME:str = "data_transformation"
 TRASNFORM_DATA_DIR_NAME:str = "transform_data"
 TRANSFORM_DATA_FILE_NAME:str = "transform_data.csv"
-SPLITTED_DATA_DIR:str = "train_test_data"
 
-TEST_SET_SIZE:float=0.2
-RANDOM_STATE:int=42
-TRAIN_FILE_NAME:str = "train.csv"
-TEST_FILE_NAME:str = "test.csv"
+FEATURE_TARGET_DATA_DIR_NAME:str = "feature_target_data"
+
+FEATURES_DATA_FILE_NAME:str = "Text_pad_sequences.npy"
+LABEL_DATA_FIEL_NAME:str = "label.npy"
+
+PREPROCESS_DATA_DIR_NAME = "preprocess_file"
+PREPROCESS_DATA_FILE_NAME = "preprocess.pkl"
+
+CLEAN_DATA_COLUMN_NAME = CONFIG_FILE['clean_data_col_name']
 
 
 """
@@ -60,8 +64,10 @@ Model_Trainer Related constant
 MODEL_TRAINER:str = "model_trainer"
 MODEL_DIR:str ="model"
 MODEL_NAME:str = PARAMS_FILE['model_name']
-
-TRAINING_HISTORY_DIR:str = "training_report"
+TEST_SET_SIZE:float=0.2
+RANDOM_STATE:int=42
+TRAINING_HISTORY_DIR:str = "report"
+TRAINING_ACC_LOSS_SCORE:str = "acc_loss_graph"
 TRAINING_HISTORY_FILE_NAME:str = PARAMS_FILE['training_history']
 
 """

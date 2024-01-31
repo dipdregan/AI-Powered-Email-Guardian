@@ -57,10 +57,14 @@ class DataTransformationConfig:
         
         self.transform_dir_path:str = os.path.join(self.data_transformation_dir,
                                                    TRASNFORM_DATA_DIR_NAME)
-        self.trasnform_data_file_name:str = TRANSFORM_DATA_FILE_NAME
 
-        self.train_test_file_path:str = os.path.join(self.data_transformation_dir,
-                                                  SPLITTED_DATA_DIR)
+
+        self.feature_data_file_path:str = os.path.join(self.data_transformation_dir,
+                                                  FEATURE_TARGET_DATA_DIR_NAME)
+        
+        self.preprocess_model_file_path:str = os.path.join(self.data_transformation_dir,
+                                                           PREPROCESS_DATA_DIR_NAME)
+        
 
 class ModelTrainerConfig:
         
@@ -72,6 +76,9 @@ class ModelTrainerConfig:
                                                  TRAINING_HISTORY_DIR)
         self.training_history_file_name = TRAINING_HISTORY_FILE_NAME
         self.params = PARAMS_FILE
+        
+        self.training_report = os.path.join(self.model_trainer_dir,
+                                              TRAINING_ACC_LOSS_SCORE)
         
 
 class ModelEvaluatorConfig:

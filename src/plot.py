@@ -3,7 +3,6 @@ import itertools
 import matplotlib.pyplot as plt
 from tensorflow.keras.models import load_model
 from sklearn.metrics import classification_report, confusion_matrix
-from src.utils import load_data, preprocess_data
 from src.logger import logging
 
 def plot_confusion_matrix(cm, classes, title='Confusion matrix',
@@ -28,7 +27,7 @@ def plot_confusion_matrix(cm, classes, title='Confusion matrix',
     plt.savefig(os.path.join(save_path, 'confusion_matrix.png'))
     plt.close()
 
-def plot_training_history(history, save_path):
+def plot_training_history(history, save_path,model_type):
     # Plot training & validation accuracy values
     plt.plot(history.history['accuracy'])
     plt.plot(history.history['val_accuracy'])
@@ -36,7 +35,7 @@ def plot_training_history(history, save_path):
     plt.ylabel('Accuracy')
     plt.xlabel('Epoch')
     plt.legend(['Train', 'Validation'], loc='upper left')
-    plt.savefig(os.path.join(save_path, 'training_history_accuracy.png'))
+    plt.savefig(os.path.join(save_path, f'{model_type}_training_history_accuracy.png'))
     plt.close()
 
     # Plot training & validation loss values
@@ -46,7 +45,7 @@ def plot_training_history(history, save_path):
     plt.ylabel('Loss')
     plt.xlabel('Epoch')
     plt.legend(['Train', 'Validation'], loc='upper left')
-    plt.savefig(os.path.join(save_path, 'training_history_loss.png'))
+    plt.savefig(os.path.join(save_path, f'{model_type}_training_history_loss.png'))
     plt.close()
 
 def compute_classification_report(y_true, y_pred, label_converter, save_path):

@@ -1,5 +1,4 @@
 from src.entity.artifact_entity import DataValidationArtifact, DataTransformationArtifact
-from sklearn.model_selection import train_test_split
 from src.entity.config_entity import DataTransformationConfig
 from src.exception import ham_spam
 from src.logger import logging
@@ -8,15 +7,10 @@ import os
 import sys
 import pandas as pd
 from src.models.label_encoding import LabelConverter
-from src.constant.emoji import emoji_pattern
-from src.constant.short_form import short_forms
-import nltk
-import re
-from nltk.tokenize import word_tokenize
-from nltk.corpus import stopwords
-from nltk.stem import WordNetLemmatizer
-from collections import Counter
-from nltk.stem import SnowballStemmer
+from tensorflow.keras.preprocessing.text import Tokenizer
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+from src.utils import *
+import numpy as np
 
 
 # nltk.download('punkt')
@@ -29,6 +23,14 @@ class DataTransformation:
                  data_validation_artifact: DataValidationArtifact):
         self.config = data_transformation_config
         self.data_validation_artifact = data_validation_artifact
+
+        self.params = PARAMS_FILE['model_params']['data_processing']
+        self.__max_words = self.params['max_words']
+        self.__max_sequence_length = self.params['max_sequence_length']
+
+        self.__clean_data_col_name = CONFIG_FILE['clean_data_col_name']
+
+
 
     def _read_data(self, file_path: str) -> pd.DataFrame:
         logging.info(f"Reading data from: {file_path}")
@@ -45,93 +47,89 @@ class DataTransformation:
         df = df.drop_duplicates(keep='first')
         return df
 
-    def _preprocess_text(self, text: str) -> str:
-        """
-        Preprocess the input text:
-        1. Convert text to lowercase
-        2. Replace short forms with their full forms
-        3. Removing emojis
-        4. Removing non-alphanumeric characters (commented out)
-        5. Removing stop words
-        6. Lemmatizing the words in to root word
 
-        """
-        text = text.lower()
-        for short_form, full_form in short_forms.items():
-            text = re.sub(r'\b{}\b'.format(re.escape(short_form)), full_form, text)
-
-        text = emoji_pattern.sub(r'', text)
-        # text = re.sub(r'[^a-zA-Z0-9\s]', '', text)
-
-        stop_words = set(stopwords.words('english'))
-        
-        stemmer = SnowballStemmer("english")
-        
-        words = [stemmer.stem(word) for word in word_tokenize(text) if word.lower() not in stop_words]
-        
-        return ' '.join(words)
-
-    def _preprocess_text_column(self, df: pd.DataFrame, column: str) -> pd.DataFrame:
+    def __data_cleaning(self, df: pd.DataFrame, column: str) -> pd.DataFrame:
         logging.info(f"Converting the text in to lower for........................>>>>>")
         logging.info("full filling the Sort form into full form....................>>>>>>>>>>")
         logging.info(f"Removing the EMOJIS from the data set...................>>>>>>>>>>>")
         logging.info("Removing the Stop words................>>>>>>>>>>>>>>")
         logging.info("Converting the text into Root words using Lemmatizer............>>>>")
         logging.info("Data Transformation Completed.....................>>>>>>>>>")
-        df[column] = df[column].apply(self._preprocess_text)
+        df[self.__clean_data_col_name] = df[column].apply(data_cleaning)
 
         return df
-   
 
-    def _save_transformed_data(self, df: pd.DataFrame, save_path: str) -> None:
-        df.to_csv(save_path, index=False)
-        logging.info(f"Saving the Transformed data to: {save_path}")
+    def _preprocess_data(self, df, max_words=6000, max_len=70, column_name:str=None):
+        # Tokenization
+        tokenizer = Tokenizer(num_words=max_words)
+        tokenizer.fit_on_texts(df[column_name])
+        sequences = tokenizer.texts_to_sequences(df[column_name])
+        padded_sequences = pad_sequences(sequences, maxlen=max_len)
+        return tokenizer, padded_sequences
+
 
     def initiate_data_transformation(self) -> DataTransformationArtifact:
-        # try:
-        logging.info(f"{30*'===='}")
-        logging.info(f"{10*'=='}Data Transformation Started...{10*'=='}")
-        logging.info(f"{30*'===='}")
+        try:
+            logging.info(f"{30*'===='}")
+            logging.info(f"{10*'=='}Data Transformation Started...{10*'=='}")
+            logging.info(f"{30*'===='}")
 
-        # df = self._read_data(self.data_validation_artifact.validated_data_path)
-        df = self._read_data(self.data_validation_artifact)
-        df = self._label_encode_target(df)
-        logging.info(f"Data :\n {df.head()}")
-        df = self._remove_duplicates(df)
+            df = self._read_data(self.data_validation_artifact.validated_data_path)
+            # df = self._read_data(self.data_validation_artifact)
+            df = self._label_encode_target(df)
+            # logging.info(f"Data :\n {df.head()}")
+            df = self._remove_duplicates(df)
 
-        df = self._preprocess_text_column(df, FEATURES_NAME)
-        data = df.dropna(subset=[FEATURES_NAME])
+            clean_df = self.__data_cleaning(df,FEATURES_NAME)
+            # data = df.dropna(subset=[FEATURES_NAME])
+            # logging.info(f"\n{clean_df}")
 
-        os.makedirs(self.config.transform_dir_path, exist_ok=True)
-        transformed_data_path = os.path.join(self.config.transform_dir_path,
-                                            self.config.trasnform_data_file_name)
-        self._save_transformed_data(data, transformed_data_path)
+            os.makedirs(self.config.transform_dir_path, exist_ok=True)
+            transformed_data_path = os.path.join(self.config.transform_dir_path,
+                                                TRANSFORM_DATA_FILE_NAME)
+            
+            save_data(clean_df, transformed_data_path)
 
-  
-        train_data,test_data = train_test_split(data, test_size=TEST_SET_SIZE, random_state=RANDOM_STATE)
+            tokenizer, padded_sequences = self._preprocess_data(clean_df,
+                                                                self.__max_words,
+                                                                self.__max_sequence_length,
+                                                                self.__clean_data_col_name
+                                                            )
+            logging.info(len(padded_sequences))
+            logging.info(padded_sequences[0])
 
-        train_test_file_dir = self.config.train_test_file_path
-        os.makedirs(train_test_file_dir, exist_ok= True)
 
-        train_file_path = os.path.join(train_test_file_dir,TRAIN_FILE_NAME)
-        test_file_path = os.path.join(train_test_file_dir,TEST_FILE_NAME)
+            feature_label_data_dir = self.config.feature_data_file_path
+            os.makedirs(feature_label_data_dir, exist_ok= True)
 
-        self._save_transformed_data(train_data,train_file_path)
-        self._save_transformed_data(test_data,test_file_path)
+            feature_data_file_path = os.path.join(feature_label_data_dir,
+                                                FEATURES_DATA_FILE_NAME)
+            label_data_file_path = os.path.join(feature_label_data_dir,
+                                                LABEL_DATA_FIEL_NAME)
 
-        logging.info(f"{30*'===='}")
-        logging.info(f"{10*'=='}Data Transformation Completed...{10*'=='}")
-        logging.info(f"{30*'===='}")
+            np.save(feature_data_file_path, padded_sequences)
 
-        data_transformation_artifact = DataTransformationArtifact(
-            data_transformation_path=transformed_data_path,
-            train_file_path = train_file_path,
-            test_file_path = test_file_path,
-        )
+            np.save(label_data_file_path, clean_df[TARGET_NAME].to_numpy())
 
-        return data_transformation_artifact
-    
+            preprocess_model_file_path = self.config.preprocess_model_file_path
+            os.makedirs(preprocess_model_file_path,exist_ok=True)
+            preprocess_model_file_dir = os.path.join(preprocess_model_file_path,
+                                                    PREPROCESS_DATA_FILE_NAME)
+            save_tokenizer(tokenizer=tokenizer,
+                        filename=preprocess_model_file_dir)
 
-        # except Exception as e:
-        #     raise ham_spam(e, sys) from e
+            logging.info(f"{30*'===='}")
+            logging.info(f"{10*'=='}Data Transformation Completed...{10*'=='}")
+            logging.info(f"{30*'===='}")
+
+            data_transformation_artifact = DataTransformationArtifact(
+                data_transformation_path=transformed_data_path,
+                feature_data_file_path=feature_data_file_path,
+                label_data_file_path=label_data_file_path,
+                preprocess_file_path=preprocess_model_file_path
+            )
+            logging.info(data_transformation_artifact)
+            return data_transformation_artifact
+        except Exception as e:
+            raise ham_spam(e, sys) from e
 

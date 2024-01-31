@@ -10,3 +10,7 @@ venv
 *.csv
 *.json
 *.csv
+*.png
+*.pkl
+*.h5
+*.npy

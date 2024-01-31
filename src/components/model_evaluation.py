@@ -2,14 +2,16 @@ import os
 import logging
 import pandas as pd
 from tensorflow.keras.models import load_model
-from sklearn.metrics import confusion_matrix
+from sklearn.metrics import confusion_matrix,accuracy_score
 from src.constant.constants import *
 from src.entity.config_entity import ModelEvaluatorConfig
 from src.entity.artifact_entity import DataTransformationArtifact, ModelTrainerArtifact,ModelEvaluatorArtifact
 from src.exception import ham_spam
-from src.utils import load_data, preprocess_data
-from src.plot import plot_confusion_matrix,plot_training_history
+from src.utils import *
+from src.plot import plot_confusion_matrix
 from src.models.label_encoding import LabelConverter
+import numpy as np
+
 import mlflow
 
 class ModelEvaluator:
@@ -19,31 +21,49 @@ class ModelEvaluator:
         
         self.config = model_evaluation_config
         self.model_trainer_artifact = model_trainer_artifact
-        self.test_data_path = data_transformation_artifact.test_file_path
-        # self.model_file_path = self.model_trainer_artifact.model_file_path
+        self.feature_data_file_path = data_transformation_artifact.feature_data_file_path
+        self.label_data_file_path = data_transformation_artifact.label_data_file_path
+        self.preprocess_model = data_transformation_artifact.preprocess_file_path
+
+        self.model_file_path = self.model_trainer_artifact.model_file_path
 
         self.__params = PARAMS_FILE['model_params']
         self.__data_processing_params = self.__params['data_processing']
         self.__max_words = self.__data_processing_params['max_words']
         self.__max_sequence_length = self.__data_processing_params['max_sequence_length']
+    
+    def evaluate_model(self, model_path, X_test, y_test):
+
+        logging.info(f'Loading the model from {model_path}...')
+        model = load_model(model_path)
+
+        logging.info('Making predictions on test data...')
+        y_pred = model.predict(X_test)
+        y_pred = (y_pred > 0.5).astype(int)
+
+        logging.info('Calculating accuracy...')
+        accuracy = accuracy_score(y_test, y_pred)
+
+        logging.info(f'Model Accuracy: {accuracy}')
+            
+        return accuracy
 
     def initiate_model_evaluation(self)->ModelEvaluatorArtifact:
         try:
             logging.info('Loading test data...')
-            test_texts, test_labels = load_data(self.test_data_path,
-                                                feature_name=FEATURES_NAME,
-                                                target=TARGET_NAME)
+            X_train, X_test, y_train, y_test =load_and_split_data(
+                                                    self.feature_data_file_path,   
+                                                    self.label_data_file_path)
 
             logging.info('Preprocessing test data...')
-            test_padded = preprocess_data(feature=test_texts,
-                                        max_words=self.__max_words,
-                                        max_sequence_length=self.__max_sequence_length)
-
+            
+            
             logging.info('Loading the trained model...')
+            models = os.listdir(self.model_trainer_artifact.model_file_path)
             trained_model = load_model(self.model_trainer_artifact.model_file_path)
 
             logging.info('Evaluating the model on the test data...')
-            evaluation_results = trained_model.evaluate(test_padded, test_labels)
+            evaluation_results = trained_model.evaluate(X_test, y_test)
             logging.info(f'Model evaluation results: {evaluation_results}')
 
             # Calculate confusion matrix

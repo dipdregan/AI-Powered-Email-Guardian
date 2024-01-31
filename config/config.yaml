@@ -11,3 +11,5 @@ columns:
 columns_data_type:
       Text_Message: 'object'
       Target: 'object'
+
+clean_data_col_name: 'clean_data'

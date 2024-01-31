@@ -84,8 +84,8 @@ class DataValidation:
         logging.info(f"{10 * '=='}Data Validation Started...{10 * '=='}")
         logging.info(f"{30 * '===='}")
 
-        # data_dir = self.data_ingestion_artifact.unzip_data_file_path
-        data_dir = self.data_ingestion_artifact
+        data_dir = self.data_ingestion_artifact.unzip_data_file_path
+        # data_dir = self.data_ingestion_artifact
         file_name = os.listdir(data_dir)[0]
         file_path = os.path.join(data_dir, file_name)
         # print(file_path)

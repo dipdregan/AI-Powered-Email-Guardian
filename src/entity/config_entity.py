@@ -71,11 +71,10 @@ class ModelTrainerConfig:
     def __init__(self, root_dir:RootConfig):
         self.model_trainer_dir : str = os.path.join(root_dir.artifact_dir, MODEL_TRAINER)
         self.model_dir:str = os.path.join(self.model_trainer_dir,MODEL_DIR) 
-        self.model_file_name:str = MODEL_NAME
+    
         self.training_history_dir = os.path.join(self.model_trainer_dir,
                                                  TRAINING_HISTORY_DIR)
         self.training_history_file_name = TRAINING_HISTORY_FILE_NAME
-        self.params = PARAMS_FILE
         
         self.training_report = os.path.join(self.model_trainer_dir,
                                               TRAINING_ACC_LOSS_SCORE)

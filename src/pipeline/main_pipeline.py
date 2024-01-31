@@ -9,7 +9,7 @@ from src.logger import logging
 from src.exception import ham_spam
 import os, sys
 
-class data_ingestion_Pipeline:
+class Pipeline:
     def __init__(self):
         try:
             self.root_dir = RootConfig()

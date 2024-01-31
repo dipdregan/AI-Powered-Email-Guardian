@@ -14,7 +14,7 @@ model_params:
     dropout: 0.2
     optimizer: 'adam'
     loss: 'binary_crossentropy'
-    validation_split: 0.1
+    validation_split: 0.2
     patience: 3
     embedding_dim: 50
     nurons_unit: 64

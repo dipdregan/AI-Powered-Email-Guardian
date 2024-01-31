@@ -98,12 +98,12 @@ class DataTransformation:
             logging.info(len(padded_sequences))
             logging.info(padded_sequences[0])
 
-
             feature_label_data_dir = self.config.feature_data_file_path
             os.makedirs(feature_label_data_dir, exist_ok= True)
 
             feature_data_file_path = os.path.join(feature_label_data_dir,
                                                 FEATURES_DATA_FILE_NAME)
+            
             label_data_file_path = os.path.join(feature_label_data_dir,
                                                 LABEL_DATA_FIEL_NAME)
 

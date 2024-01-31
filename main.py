@@ -1,4 +1,4 @@
-from src.pipeline.main_pipeline import data_ingestion_Pipeline
+from src.pipeline.main_pipeline import Pipeline
 
-obj = data_ingestion_Pipeline()
+obj = Pipeline()
 obj.initiate_pipeline()

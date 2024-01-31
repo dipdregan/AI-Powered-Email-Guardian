@@ -3,7 +3,7 @@ import logging
 import pandas as pd
 import os, sys
 from sklearn.model_selection import train_test_split
-from tensorflow.keras.callbacks import EarlyStopping
+from tensorflow.keras.callbacks import EarlyStopping,ModelCheckpoint
 from src.plot import plot_training_history
 from src.constant.constants import *
 import pandas as pd
@@ -25,7 +25,7 @@ class ModelTrainer:
         self._X = data_transformation_artifact.feature_data_file_path
         self._y = data_transformation_artifact.label_data_file_path
 
-        self._model_training_params = self.model_trainer_config.params['model_params']['model_training']
+        self._model_training_params = PARAMS_FILE['model_params']['model_training']
         self._batch_size = self._model_training_params['batch_size']
         self._epochs = self._model_training_params['epochs']
         self._validation_split = self._model_training_params['validation_split']
@@ -42,25 +42,35 @@ class ModelTrainer:
                                                             random_state=RANDOM_STATE)
         return X_train, X_test, y_train, y_test
 
+
+
+
     def train_model(self, X_train, y_train, model_type):
         logging.info(f"Creating Early stopping for {model_type} model...")
-        early_stopping = EarlyStopping(monitor='val_loss', patience=self._patience, restore_best_weights=True)
+        early_stopping = EarlyStopping(monitor='val_loss', 
+                                       patience=self._patience, 
+                                       restore_best_weights=True
+                                       )
 
         # Build the model using ModelFactory
         self.model = self.model_factory.build_model_type(model_type)
 
         logging.info(f"Training the {model_type} model for {self._epochs} epochs...")
-        history = self.model.fit(X_train, y_train, epochs=self._epochs, batch_size=self._batch_size,
-                                 validation_split=self._validation_split, callbacks=[early_stopping])
+        history = self.model.fit(X_train, y_train,
+                                epochs=self._epochs, batch_size=self._batch_size,
+                                validation_split=self._validation_split,
+                                callbacks=[early_stopping])
 
         # Log training history and save to file
         for epoch, metrics in enumerate(history.history['loss'], start=1):
             log_message = f"Epoch {epoch}/{self._epochs} - Loss: {history.history['loss'][epoch-1]} - Accuracy: {history.history['accuracy'][epoch-1]} - Val_loss: {history.history['val_loss'][epoch-1]} - Val_accuracy: {history.history['val_accuracy'][epoch-1]}"
+
             logging.info(log_message)
 
         history_log_dir = self.model_trainer_config.training_history_dir
         os.makedirs(self.model_trainer_config.training_history_dir, exist_ok=True)
-        history_log_path = os.path.join(history_log_dir, f"{model_type}_{TRAINING_HISTORY_FILE_NAME}")
+        history_log_path = os.path.join(history_log_dir, 
+                                        f"{model_type}_{TRAINING_HISTORY_FILE_NAME}")
 
         training_metrics = {
             'epochs': list(range(1, self._epochs + 1)),

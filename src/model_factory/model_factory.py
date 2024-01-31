@@ -1,7 +1,5 @@
-import pandas as pd
 from keras.models import Model,Sequential
 from keras.layers import Input, Embedding, LSTM, SimpleRNN, concatenate, Dense, Dropout
-import joblib
 from src.constant.constants import PARAMS_FILE
 
 class ModelFactory:
@@ -20,11 +18,8 @@ class ModelFactory:
         self.__hidden_activation = self.__model_training_params['hidden_activation']
         self.__out_put_activation = self.__model_training_params['out_put_activation']
 
-
-        self.model = None
-
-
     def build_rnn_model(self):
+        ## we can apply fuctional approach as well
         model = Sequential()
         model.add(Embedding(input_dim=self.__max_words, output_dim=self.__embedding_dim, input_length=self.__max_sequence_length ))
         model.add(SimpleRNN(self.__nurons_unit,dropout=self.__dropout,recurrent_dropout=self.__dropout))
@@ -41,6 +36,7 @@ class ModelFactory:
         return model
 
     def build_combined_model(self):
+        ## we have explore more
         input_layer = Input(shape=(self.__max_sequence_length,))
         embedding_layer = Embedding(input_dim=self.__max_words, output_dim=self.__embedding_dim)(input_layer)
 
@@ -66,34 +62,3 @@ class ModelFactory:
             return self.build_combined_model()
         else:
             raise ValueError(f"Invalid model_type: {model_type}. Supported types are 'rnn', 'lstm', and 'combined'.")
-
-
-# # Assuming you have a DataFrame named df
-# # ... (your data preprocessing steps)
-
-# # Instantiate ModelFactory
-# model_factory = ModelFactory()
-
-# # Preprocess data
-# X_train, X_test, y_train, y_test = model_factory.preprocess_data(df)
-
-# # Build and train RNN model
-# rnn_model = model_factory.build_rnn_model()
-# model_factory.train_model(rnn_model, X_train, y_train, X_test, y_test)
-
-# # Save RNN model and preprocessors
-# model_factory.save_model_and_preprocessors(rnn_model, 'rnn_model.h5', 'rnn_tokenizer.joblib', 'rnn_label_encoder.joblib')
-
-# # Build and train LSTM model
-# lstm_model = model_factory.build_lstm_model()
-# model_factory.train_model(lstm_model, X_train, y_train, X_test, y_test)
-
-# # Save LSTM model and preprocessors
-# model_factory.save_model_and_preprocessors(lstm_model, 'lstm_model.h5', 'lstm_tokenizer.joblib', 'lstm_label_encoder.joblib')
-
-# # Build and train combined model
-# combined_model = model_factory.build_combined_model()
-# model_factory.train_model(combined_model, X_train, y_train, X_test, y_test)
-
-# # Save combined model and preprocessors
-# model_factory.save_model_and_preprocessors(combined_model, 'combined_model.h5', 'combined_tokenizer.joblib', 'combined_label_encoder.joblib')

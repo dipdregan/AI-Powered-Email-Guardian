@@ -1,22 +1,26 @@
-# from components.data_ingetion import DataIngestion
-from entity.config_entity import DataIngestionConfig,RootConfig,DataTransformationConfig
+from src.main_pipeline.main_pipeline import Pipeline
 
-# from components.data_validation import DataValidation
-from entity.config_entity import *
-from components.data_trasnformation import DataTransformation
-# from entity.artifact_entity import *
-# from src.components.model_trainer import ModelTrainer
-# from src.components.model_evaluation import ModelEvaluator
-from src.logger import logging
+Pipeline().initiate_pipeline()
 
-config = DataTransformationConfig(
-    root_dir=RootConfig()
-)
+# # from components.data_ingetion import DataIngestion
+# from entity.config_entity import DataIngestionConfig,RootConfig,DataTransformationConfig
 
-# print(config.__dict__)
-data_ingestion_artifact = r"F:\End_To_End_project\Ham_Spam_Classifier(ETE)\artifact\01_25_2024_15_11_32\data_validation\invalid\invalidated_data.csv"
-obj = DataTransformation(config,data_ingestion_artifact)
-obj.initiate_data_transformation()
+# # from components.data_validation import DataValidation
+# from entity.config_entity import *
+# from components.data_trasnformation import DataTransformation
+# # from entity.artifact_entity import *
+# # from src.components.model_trainer import ModelTrainer
+# # from src.components.model_evaluation import ModelEvaluator
+# from src.logger import logging
+
+# config = DataTransformationConfig(
+#     root_dir=RootConfig()
+# )
+
+# # print(config.__dict__)
+# data_ingestion_artifact = r"F:\End_To_End_project\Ham_Spam_Classifier(ETE)\artifact\01_25_2024_15_11_32\data_validation\invalid\invalidated_data.csv"
+# obj = DataTransformation(config,data_ingestion_artifact)
+# obj.initiate_data_transformation()
 
 
 # def model_trainer():

@@ -3,13 +3,15 @@ import setuptools
 with open("README.md", "r", encoding="utf-8") as f:
     long_description = f.read()
 
-__version__ = "0.0.0"
+__version__ = "0.0.3"
 
 REPO_NAME="Ham_Spam_Classifier(ETE)"
 AUTHOR_NAME="dipdregan"
+SRC_REPO="src"
 AUTHOR_Email="dipendrapratap155@gmail.com"
 
 setuptools.setup(
+    name=SRC_REPO,
     version=__version__,
     author=AUTHOR_NAME,
     author_email=AUTHOR_Email,

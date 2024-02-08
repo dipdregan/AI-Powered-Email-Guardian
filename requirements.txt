@@ -9,7 +9,6 @@ nltk
 wordcloud
 tensorflow-cpu
 pyYAML
+kaggle
 types-PyYAML
-
-# tensorflow
 -e .

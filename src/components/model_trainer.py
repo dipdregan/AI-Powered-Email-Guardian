@@ -4,7 +4,7 @@ import pandas as pd
 import os, sys
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.callbacks import EarlyStopping,ModelCheckpoint
-from src.plot import plot_training_history
+from src.utils.plot import plot_training_history
 from src.constant.constants import *
 import pandas as pd
 from src.entity.config_entity import ModelTrainerConfig

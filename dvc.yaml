@@ -1,6 +1,6 @@
 stages:
   data_ingestion:
-    cmd: python src/pipeline/main_pipeline.py start_data_ingestion
+    cmd: python src/main_pipeline/main_pipeline start_data_ingestion
     deps:
       - src/components/data_ingetion.py
       - src/entity/config_entity.py

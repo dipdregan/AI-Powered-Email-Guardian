@@ -52,6 +52,18 @@
             width: 30px;
             margin: 0 10px;
         }
+
+        .message {
+            color: white; /* Change message value color to white */
+        }
+
+        .prediction {
+            color: red; /* Change prediction value color to red */
+        }
+
+        .probability {
+            color: green; /* Change probability value color to green */
+        }
     </style>
 </head>
 <body>
@@ -62,10 +74,14 @@
         <button type="submit">Predict</button>
     </form>
     <div id="result">
-        {% if prediction %}
-            <p>Prediction: {{ prediction }}</p>
-        {% endif %}
+        {% for prediction in predictions %}
+            <p class="message">Message: {{ prediction.message }}</p>
+            <p class="prediction">Prediction: {{ prediction.prediction }}</p>
+            <p class="probability">Probability: {{ prediction.probability }}</p>
+            <hr>
+        {% endfor %}
     </div>
+
     <div class="footer">
         <a href="https://www.linkedin.com/" target="_blank"><img src="{{ url_for('static', filename='linkedin.png') }}" alt="LinkedIn"></a>
         <a href="https://github.com/" target="_blank"><img src="{{ url_for('static', filename='github.png') }}" alt="GitHub"></a>

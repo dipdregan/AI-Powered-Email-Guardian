@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
-from src.utils import read_yaml_file
+import yaml
+from src.ham_spam.utils.utils import read_yaml_file
 
 ROOT_DIR:Path = os.getcwd()
 ARTIFACT_DIR:str = "artifact"
@@ -74,8 +75,7 @@ TRAINING_HISTORY_FILE_NAME:str = PARAMS_FILE['training_history']
 Model EVALUATOR  Related Constant
 """
 MODEL_EVALUATOR_DIR_NAME = 'model_evaluator'
-REJECTED_MODEL_DIR = "rejected_model"
 ACCEPTED_MODEL_DIR = "accepted_model"
-MODEL_PERFORMANCE_FILE_NAME = "performance.png"
 EVALUATION_REPORT = 'evaluation_report'
-confusion_matrix_file_name = "conf.png"
+EVALUATION_REPORT_JSON = 'evaluation_report.json'
+CONFUSION_MATRIX = "conf.png"

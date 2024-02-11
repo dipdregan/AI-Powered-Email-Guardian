@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 import yaml
-from src.ham_spam.utils.utils import read_yaml_file
+from src.utils.utils import read_yaml_file
 
 ROOT_DIR:Path = os.getcwd()
 ARTIFACT_DIR:str = "artifact"
@@ -79,3 +79,10 @@ ACCEPTED_MODEL_DIR = "accepted_model"
 EVALUATION_REPORT = 'evaluation_report'
 EVALUATION_REPORT_JSON = 'evaluation_report.json'
 CONFUSION_MATRIX = "conf.png"
+
+"""
+s3  Bucket related constants
+"""
+BUCKET_NAME = 'hamspam22'
+S3_NEW_VERSION = "New_version_model"
+S3_OLDER_VERISON = "Older_version_model"

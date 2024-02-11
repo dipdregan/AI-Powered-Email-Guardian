@@ -3,7 +3,7 @@ import itertools
 import matplotlib.pyplot as plt
 from tensorflow.keras.models import load_model
 from sklearn.metrics import classification_report, confusion_matrix
-from src.ham_spam.logger import logging
+from src.logger import logging
 import itertools
 import numpy as np
 

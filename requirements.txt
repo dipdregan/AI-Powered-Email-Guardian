@@ -13,4 +13,5 @@ kaggle
 types-PyYAML
 pyYAML
 python-dotenv
+boto3
 # -e .

@@ -29,5 +29,4 @@ class ModelTrainerArtifact:
 @dataclass
 class ModelEvaluatorArtifact:
     accepted_model_path:Path
-    rejected_model_path:Path
     evaluation_report_path:Path

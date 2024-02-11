@@ -101,18 +101,19 @@ class ModelTrainer:
                 model_file_path = self._save_model(model_type=model_type)
                 history_log_path = os.path.join(self.model_trainer_config.training_history_dir,
                                                 f"{model_type}_{TRAINING_HISTORY_FILE_NAME}")
-                model_trainer_artifact = ModelTrainerArtifact(
-                    model_file_path=model_file_path,
-                    training_report_file_path=history_log_path,
-                    training_report_graph = training_report_graph
-                )
-
-                logging.info(model_trainer_artifact)
-                artifacts.append(model_trainer_artifact)
+                
+                
             except Exception as e:
                 logging.error(f"Error during training {model_type} model: {str(e)}")
 
-        return artifacts
+        model_trainer_artifact = ModelTrainerArtifact(
+                    model_file_path=self.model_trainer_config.model_dir,
+                    training_report_file_path=history_log_path,
+                    training_report_graph = training_report_graph
+                )
+        logging.info(model_trainer_artifact)
+        artifacts.append(model_trainer_artifact)
+        return model_trainer_artifact
     
 
     

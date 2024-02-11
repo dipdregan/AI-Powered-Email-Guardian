@@ -1,14 +1,14 @@
 import yaml
 import pandas as pd
-from src.ham_spam.exception import ham_spam
+from src.exception import ham_spam
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from collections import Counter
 from nltk.stem import SnowballStemmer
-from src.ham_spam.constant.emoji import emoji_pattern
-from src.ham_spam.constant.short_form import short_forms
+from src.constant.emoji import emoji_pattern
+from src.constant.short_form import short_forms
 import re
 from nltk.tokenize import word_tokenize
 import nltk

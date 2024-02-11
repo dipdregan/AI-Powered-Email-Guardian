@@ -5,7 +5,7 @@ from src.logger import logging
 from src.exception import ham_spam
 import os, sys
 import pandas as pd
-from src.utils import read_json, write_json
+from src.utils.utils import read_json, write_json
 from typing import Tuple
 
 class DataValidation:

@@ -9,7 +9,7 @@ import pandas as pd
 from src.models.label_encoding import LabelConverter
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
-from src.utils import *
+from src.utils.utils import *
 import numpy as np
 
 
@@ -130,6 +130,7 @@ class DataTransformation:
             )
             logging.info(data_transformation_artifact)
             return data_transformation_artifact
+            
         except Exception as e:
             raise ham_spam(e, sys) from e
 

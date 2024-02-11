@@ -12,7 +12,7 @@ from src.entity.artifact_entity import DataTransformationArtifact, ModelTrainerA
 from src.model_factory.model_factory import ModelFactory
 from src.logger import logging
 from src.exception import ham_spam
-from src.utils import *
+from src.utils.utils import *
 import numpy as np
 
 class ModelTrainer:
@@ -32,18 +32,6 @@ class ModelTrainer:
         self._patience = self._model_training_params['patience']
         self.model = None
         self.model_factory = ModelFactory()
-
-    def load_and_split_data(self):
-        features = np.load(self._X)
-        labels = np.load(self._y)
-
-        X_train, X_test, y_train, y_test = train_test_split(features, labels,
-                                                            test_size=TEST_SET_SIZE,
-                                                            random_state=RANDOM_STATE)
-        return X_train, X_test, y_train, y_test
-
-
-
 
     def train_model(self, X_train, y_train, model_type):
         logging.info(f"Creating Early stopping for {model_type} model...")
@@ -102,7 +90,7 @@ class ModelTrainer:
 
     def initiate_model_trainer(self, model_types=['lstm', 'rnn', 'combined']):
         artifacts = []
-        X_train, X_test, y_train, y_test = self.load_and_split_data()
+        X_train,y_train, X_test, y_test = load_and_split_data(self._X,self._y)
         
         for model_type in model_types:
             try:

@@ -2,14 +2,14 @@ import os
 import shutil
 import json
 import tensorflow as tf
-from src.ham_spam.entity.artifact_entity import ModelTrainerArtifact, DataTransformationArtifact, ModelEvaluatorArtifact
-from src.ham_spam.entity.config_entity import ModelEvaluatorConfig
-from src.ham_spam.constant.constants import *
+from src.entity.artifact_entity import ModelTrainerArtifact, DataTransformationArtifact, ModelEvaluatorArtifact
+from src.entity.config_entity import ModelEvaluatorConfig
+from src.constant.constants import *
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
-from src.ham_spam.utils.utils import write_json, load_and_split_data
-from src.ham_spam.utils.plot import plot_confusion_matrix
-from src.ham_spam.logger import logging
-from sklearn.metrics import accuracy_score,confusion_matrix
+from src.utils.utils import write_json, load_and_split_data
+from src.utils.plot import plot_confusion_matrix
+from src.logger import logging
+from sklearn.metrics import accuracy_score
 import matplotlib.pyplot as plt
 
 class ModelEvaluator:

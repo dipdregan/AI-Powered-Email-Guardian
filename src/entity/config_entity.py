@@ -1,5 +1,5 @@
 from datetime import datetime
-from src.constant.constants import *
+from src.ham_spam.constant.constants import *
 import os 
 
 class RootConfig:
@@ -81,20 +81,12 @@ class ModelTrainerConfig:
         
 
 class ModelEvaluatorConfig:
-    def __init__(self, root_dir: RootConfig):
-        self.model_evaluator_dir = os.path.join(MODEL_EVALUATOR_DIR_NAME)  
+    def __init__(self, root_dir:RootConfig):
+        self.model_evaluator_dir = os.path.join(root_dir.artifact_dir,MODEL_EVALUATOR_DIR_NAME)  
         
         self.accepted_model = os.path.join(self.model_evaluator_dir,
                                            ACCEPTED_MODEL_DIR) 
         
-        self.rejected_model = os.path.join(self.model_evaluator_dir, 
-                                          REJECTED_MODEL_DIR)
-        
         self.evaluation_report = os.path.join(self.model_evaluator_dir,
                                               EVALUATION_REPORT)
         
-
-# if __name__ =="__main__":
-#     a = RootConfig()
-#     obj = DataIngestionConfig(a)
-#     print(obj.__dict__)

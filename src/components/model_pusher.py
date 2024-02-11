@@ -94,4 +94,8 @@ class ModelLoader:
         _,_, x_test, y_test = load_and_split_data(self.x, self.y)
         self.compare_models_update_models(s3_model, new_model, x_test, y_test)
 
-
+        return {
+            "model": new_model,
+            "model_key": s3_model_key,
+            "model_accuracy": self.evaluate_model_accuracy(new_model, x_test, y_test)
+        }

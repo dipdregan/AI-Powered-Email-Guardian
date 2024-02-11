@@ -11,4 +11,6 @@ tensorflow-cpu
 pyYAML
 kaggle
 types-PyYAML
--e .
+pyYAML
+python-dotenv
+# -e .

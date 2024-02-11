@@ -3,16 +3,22 @@ import itertools
 import matplotlib.pyplot as plt
 from tensorflow.keras.models import load_model
 from sklearn.metrics import classification_report, confusion_matrix
-from src.logger import logging
+from src.ham_spam.logger import logging
+import itertools
+import numpy as np
 
-def plot_confusion_matrix(cm, classes, title='Confusion matrix',
-                           cmap=plt.cm.Blues, label_converter=None,save_path=None):
+def plot_confusion_matrix(y_true, y_pred, classes, title='Confusion matrix', cmap=plt.cm.Blues, save_path=None):
+    """
+    This function prints and plots the confusion matrix.
+    Normalization can be applied by setting `normalize=True`.
+    """
+    cm = confusion_matrix(y_true, y_pred)
     plt.imshow(cm, interpolation='nearest', cmap=cmap)
     plt.title(title)
     plt.colorbar()
-    tick_marks = range(len(classes))
-    plt.xticks(tick_marks, [label_converter.decode(label) for label in classes], rotation=45)
-    plt.yticks(tick_marks, [label_converter.decode(label) for label in classes])
+    tick_marks = np.arange(len(classes))
+    plt.xticks(tick_marks, classes, rotation=45)
+    plt.yticks(tick_marks, classes)
 
     fmt = 'd'
     thresh = cm.max() / 2.
@@ -24,8 +30,13 @@ def plot_confusion_matrix(cm, classes, title='Confusion matrix',
     plt.ylabel('True label')
     plt.xlabel('Predicted label')
     plt.tight_layout()
-    plt.savefig(os.path.join(save_path, 'confusion_matrix.png'))
+    if save_path:
+        plt.savefig(save_path)
+    else:
+        plt.show()
     plt.close()
+
+
 
 def plot_training_history(history, save_path,model_type):
     # Plot training & validation accuracy values

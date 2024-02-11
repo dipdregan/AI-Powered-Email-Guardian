@@ -1,5 +1,5 @@
 from datetime import datetime
-from src.ham_spam.constant.constants import *
+from src.constant.constants import *
 import os 
 
 class RootConfig:

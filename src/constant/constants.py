@@ -86,3 +86,4 @@ s3  Bucket related constants
 BUCKET_NAME = 'hamspam22'
 S3_NEW_VERSION = "New_version_model"
 S3_OLDER_VERISON = "Older_version_model"
+PREPROCESS_MODEL_PATH = "preprocess_model"

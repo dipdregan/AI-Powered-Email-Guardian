@@ -1,11 +1,10 @@
-import boto3
-from tensorflow.keras.models import load_model
-from io import BytesIO
-from dotenv import load_dotenv
+import os
+import json
+import tensorflow as tf
 from src.entity.artifact_entity import DataTransformationArtifact, ModelEvaluatorArtifact
 from src.utils.utils import load_and_split_data
+from src.utils.s3_operation_utils import S3_operation
 from sklearn.metrics import accuracy_score
-import os
 from src.logger import logging
 from src.constant.constants import *
 
@@ -21,123 +20,73 @@ class ModelLoader:
         self.process_model = data_transform_artifact.preprocess_file_path
         self.model_path = model_evaluation_artifact.accepted_model_path
 
+        self.s3_operation = S3_operation()
+        print(self.s3_operation.accessing_path_s3(PREPROCESS_MODEL_PATH))
+        print(self.s3_operation.accessing_path_s3(S3_NEW_VERSION))
 
-        load_dotenv()
-        self.aws_access_key_id = os.getenv('AWS_ACCESS_KEY_ID')
-        self.aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
-        self.aws_region = os.getenv('AWS_REGION')
-        self.bucket_name = BUCKET_NAME
-        self.s3_new_version = S3_NEW_VERSION
-        self.s3_older_version = S3_OLDER_VERISON
-        self.s3_client = boto3.client('s3', aws_access_key_id=self.aws_access_key_id,
-                                      aws_secret_access_key=self.aws_secret_access_key,
-                                      region_name=self.aws_region)
-        
     def uploading_process_pkl(self):
-        if os.path.exists(self.process_model_dir):
-            files = os.listdir(self.process_model_dir)
-            if "preprocess.pkl" in files:
-                process_pkl_path = os.path.join(self.process_model_dir, "preprocess.pkl")
-                process_model_key = f"{self.s3_new_version}/preprocess.pkl"
-                
-                self.s3_client.delete_object(Bucket=self.bucket_name, Key=process_model_key)
-                logging.info(f"Existing process.pkl file deleted from S3: {process_model_key}")
+        local_file = os.listdir(self.process_model_dir)[0]
+        s3_files = self.s3_operation.accessing_path_s3(PREPROCESS_MODEL_PATH)
 
-                with open(process_pkl_path, "rb") as process_pkl_file:
-                    self.s3_client.upload_fileobj(process_pkl_file,
-                                                self.bucket_name, 
-                                                process_model_key)
-                logging.info(f"New process.pkl uploaded to S3: {process_model_key}")
-            else:
-                logging.info("No process.pkl file found in the process model directory.")
-        else:
-            logging.error("Process model directory does not exist.")
+        process_pkl_path = os.path.join(self.process_model_dir, local_file)
+        process_model_key = f"{PREPROCESS_MODEL_PATH}/{local_file}"
 
+        if process_model_key in s3_files:
+            self.s3_operation.delete_file(process_model_key)
+            logging.info(f"Existing {os.path.basename(process_model_key)} file deleted from S3: {process_model_key}")
 
-    def load_model_from_s3_new(self, model_key):
-        local_model_path = "model.h5"  
-        self.s3_client.download_file(self.bucket_name, model_key, local_model_path)
-        s3_model = load_model(local_model_path)
-        new_model = load_model(self.model_path)
-        os.remove(local_model_path)
-        return s3_model, new_model
+        self.s3_operation.upload_file(process_pkl_path, process_model_key)
+        logging.info(f"New {local_file} uploaded to S3: {process_model_key}")
 
-    def accessing_path_s3(self):
-        file_paths = []
-        response = self.s3_client.list_objects_v2(Bucket=self.bucket_name,
-                                                  Prefix=self.s3_new_version + '/')
-        if 'Contents' in response:
-            for obj in response['Contents']:
-                if not obj['Key'].endswith('/'):
-                    file_paths.append(obj['Key'])
-        logging.info(f"S3 bucket files accessed successfully. {file_paths}")
-        return file_paths
+        return process_model_key
     
     def evaluate_model_accuracy(self, model, x_test, y_test):
         y_pred = model.predict(x_test)
         y_pred_prob = (y_pred > 0.5).astype(int)
         accuracy = accuracy_score(y_test, y_pred_prob)
         return accuracy
+    
+    def checking_accuracy(self):
+        local_model = tf.keras.models.load_model(self.model_path)
+        
+        s3_model_path = self.s3_operation.accessing_path_s3(S3_NEW_VERSION)[0]
+        s3_model = self.s3_operation.load_model(s3_model_path)
 
-    def compare_models_update_models(self, s3_model, new_model, x_test, y_test):
-        s3_model_accuracy = self.evaluate_model_accuracy(s3_model, x_test, y_test)
-        new_model_accuracy = self.evaluate_model_accuracy(new_model, x_test, y_test)
+        _, _, X_test, y_test = load_and_split_data(self.x, self.y)
+        s3_accuracy = round(self.evaluate_model_accuracy(s3_model, X_test, y_test), 2)
+        local_accuracy = round(self.evaluate_model_accuracy(local_model, X_test, y_test), 2)
 
-        print(f"S3 model_acc : {s3_model_accuracy}")
-        print(f"new model_Accu :{new_model_accuracy}")
-        model_name = os.path.basename(self.model_path)
-        old_model_key = self.accessing_path_s3()[0]  
-        old_model_name = os.path.basename(old_model_key)
+        return s3_accuracy, local_accuracy
+        
+    def upload_or_reject_model(self, new_accuracy, s3_accuracy=None):
+        s3_model_path = self.s3_operation.accessing_path_s3(S3_NEW_VERSION)[0]
 
-        if new_model_accuracy > s3_model_accuracy:
-            logging.info(f"New model {model_name} has higher accuracy {new_model_accuracy} in comparison to model {old_model_name} with accuracy {s3_model_accuracy}. Uploading to S3...")
-            model_path = f"{self.s3_new_version}/{model_name}"
-            
-            # Upload new model to S3
-            new_model.save(model_name)
-            with open(model_name, "rb") as model_file:
-                self.s3_client.upload_fileobj(model_file, self.bucket_name, model_path)
-            logging.info(f"Model uploaded to S3: {model_path}")
-            logging.info(f"less acc Model{old_model_name} move to s3 {self.s3_older_version}")
-            
-            old_model_old_version_key = old_model_key.replace(self.s3_new_version, self.s3_older_version)
-            copy_source = {'Bucket': self.bucket_name, 'Key': old_model_key}
-            self.s3_client.copy_object(CopySource=copy_source, Bucket=self.bucket_name, Key=old_model_old_version_key)
-            self.s3_client.delete_object(Bucket=self.bucket_name, Key=old_model_key)
-            logging.info(f"Old model moved to older version: {old_model_old_version_key}")
-
+        if new_accuracy > s3_accuracy:
+            old_model_key = f"{S3_OLDER_VERISON}/{os.path.basename(s3_model_path)}"
+            self.s3_operation.copy_file(s3_model_path, old_model_key)
+            self.s3_operation.delete_file(s3_model_path)
+            logging.info(f"S3 model moved {os.path.basename(s3_model_path)} to older version: {old_model_key}")
+            logging.info(f"New model accuracy ({new_accuracy}) is higher than S3 model accuracy ({s3_accuracy}). "
+                        "Uploading new model and moving S3 model to older version folder.")
+            new_model_key = f"{S3_NEW_VERSION}/{os.path.basename(self.model_path)}"
+            self.s3_operation.upload_file(self.model_path, new_model_key)
+            logging.info(f"New model uploaded to S3: {new_model_key}")
+            return new_model_key
         else:
-            logging.info(f"S3 model {model_name} has higher or equal accuracy {s3_model_accuracy} in comparison to model {model_name} with accuracy {new_model_accuracy}. Not updating.")
+            logging.info(f"New model accuracy ({new_accuracy}) is not higher than S3 model accuracy ({s3_accuracy}). "
+                        "Rejecting the new model.")
+            return s3_model_path
 
     def initiate_model_pusher(self):
-        file_paths = self.accessing_path_s3()
-        if not file_paths:
-            logging.info("No models found in S3. Pushing the model to the 'New_version_model' folder.")
-            # Assuming self.model_path contains the path to the model you want to push
-            model_name = os.path.basename(self.model_path)
-            model_path = f"{self.s3_new_version}/{model_name}"
-            new_model = load_model(self.model_path)
-            new_model.save(model_name)
-            with open(model_name, "rb") as model_file:
-                self.s3_client.upload_fileobj(model_file, self.bucket_name, model_path)
-            logging.info(f"Model uploaded to S3: {model_path}")
-            
-            return {
-                "model": new_model,
-                "model_key": model_path,
-                "model_accuracy": None  # Since we don't have accuracy without evaluation
-            }
-        
-        s3_model_key = file_paths[0]
-        s3_model, new_model = self.load_model_from_s3_new(s3_model_key)
+        process_path = self.uploading_process_pkl()
+        s3_accuracy, local_accuracy = self.checking_accuracy()
 
-        _, _, x_test, y_test = load_and_split_data(self.x, self.y)
-        self.compare_models_update_models(s3_model, new_model, x_test, y_test)
+        model_path = self.upload_or_reject_model(s3_accuracy, local_accuracy)
 
-        return {
-            "model": new_model,
-            "model_key": s3_model_key,
-            "model_accuracy": self.evaluate_model_accuracy(new_model, x_test, y_test)
+        model_info = {
+            "process_path": process_path,
+            "model_path": model_path
         }
-
-
+        json_path = os.path.join(CONFIG_DIR_NAME, 'model_info.json')
+        with open(json_path, "w") as json_file:
+            json.dump(model_info, json_file)

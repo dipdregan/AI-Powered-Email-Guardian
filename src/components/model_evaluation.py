@@ -67,10 +67,11 @@ class ModelEvaluator:
         logging.info("============================Model Evaluation Started ================")
         _, _, X_test, y_test = load_and_split_data(X=self.X, y=self.y)
         accepted_model_path = self.evaluate_models(X_test, y_test)
-        print(accepted_model_path)
+        logging.info(accepted_model_path)
         # Save the accepted model to the accepted directory
         accepted_model_name = os.path.basename(accepted_model_path)
-        print(accepted_model_name)
+        
+        logging.info(accepted_model_name)
         os.makedirs(self.config.accepted_model, exist_ok=True)
         print(self.config.accepted_model)
         accepted_model_destination = os.path.join(self.config.accepted_model, accepted_model_name)
@@ -88,7 +89,8 @@ class ModelEvaluator:
             "recall": recall,
             "f1": f1
         }
-        write_json(evaluation_report, os.path.join(self.config.evaluation_report, EVALUATION_REPORT_JSON))
+        path = os.path.join(self.config.evaluation_report, EVALUATION_REPORT_JSON)
+        write_json(evaluation_report, path)
         
         model_evaluation_artifact =  ModelEvaluatorArtifact(
             accepted_model_path=self.accepted_model,

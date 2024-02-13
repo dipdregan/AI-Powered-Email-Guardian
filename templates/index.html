@@ -4,6 +4,196 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ham/Spam Prediction</title>
+    <style>
+        button {
+            padding: 25px 50px; /* Adjust padding for better shape */
+            background-color: #5425ab;
+            color: #972020;
+            font-size: 30px;
+            border: none;
+            cursor: pointer;
+            border-radius: 40px; /* Rounded corners for an egg shape */
+            box-shadow: 0 0 10px 7px #0d7e7e; /* Glow effect */
+            transition: background-color 0.3s, box-shadow 0.3s; /* Smooth transition for hover */
+        }
+
+        button:hover {
+            background-color: #455aa0;
+            box-shadow: 0 0 12px 3px #bbf5ff; /* Enhanced glow effect on hover */
+        }
+        body {
+            background-color: #1f1f1f;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            width: 100%;
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        #userLogs {
+            width: 200px; /* Fixed width for the mini-aside */
+            background-color: #333;
+            padding: 10px;
+            margin-right: 20px;
+            overflow-y: auto; /* Enable scrolling if content exceeds the height */
+            height: 400px; /* Adjust height as needed */
+            color: white; /* Change text color to white */
+        }
+
+        #prediction {
+            width: calc(100% - 250px); /* Adjust width for the prediction area */
+            background-color: #333;
+            padding: 10px;
+            overflow-y: auto; /* Enable scrolling if content exceeds the height */
+            height: 400px; /* Adjust height as needed */
+            color: white; /* Change text color to white */
+        }
+
+        textarea {
+            width: 80%;
+            height: 100px;
+            resize: none;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #4caf50;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #333;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .footer img {
+            width: 30px;
+            margin: 0 10px;
+        }
+
+        .message {
+            color: white; /* Change message value color to white */
+        }
+
+        .prediction {
+            color: red; /* Change prediction value color to red */
+        }
+
+        .probability {
+            color: green; /* Change probability value color to green */
+        }
+    </style>
+</head>
+<body>
+    <header>Ham/Spam Prediction</header>
+    <div class="container">
+        <div id="userLogs">
+            <h2>User Prediction Logs</h2>
+            <ul id="userMessages"></ul>
+        </div>
+        <div id="prediction">
+            <form id="predictionForm">
+                <label for="message">Enter your message:</label><br>
+                <textarea id="message" name="message" required></textarea><br>
+                <button type="button" onclick="predict()">Predict</button>
+            </form>
+            <div id="result">
+                {% for prediction in predictions %}
+                    <p class="message">Message: {{ prediction.message }}</p>
+                    <p class="prediction">Prediction: {{ prediction.prediction }}</p>
+                    <p class="probability">Probability: {{ prediction.probability }}</p>
+                    <hr>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <a href="https://www.linkedin.com/" target="_blank"><img src="{{ url_for('static', filename='linkedin.png') }}" alt="LinkedIn"></a>
+        <a href="https://github.com/" target="_blank"><img src="{{ url_for('static', filename='github.png') }}" alt="GitHub"></a>
+    </div>
+
+    <script>
+        function addUserMessage(message) {
+            var userMessages = document.getElementById("userMessages");
+            var li = document.createElement("li");
+            li.textContent = message;
+            userMessages.appendChild(li);
+            
+            // Remove the oldest message if there are more than four messages
+            if (userMessages.children.length > 4) {
+                userMessages.removeChild(userMessages.children[0]);
+            }
+        }
+
+        function predict() {
+            var message = document.getElementById("message").value;
+            addUserMessage(message);
+
+            // Send message to Flask server for prediction
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    displayPredictions(response.predictions); // Update this line to correctly access predictions
+                }
+            };
+            xhr.open("POST", "/", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.send("message=" + encodeURIComponent(message));
+        }
+
+        function displayPredictions(predictions) {
+            var resultDiv = document.getElementById("result");
+            resultDiv.innerHTML = ""; // Clear previous predictions
+            predictions.forEach(function(prediction) {
+                var messageDiv = document.createElement("div");
+                messageDiv.innerHTML = "<p class='message'>Message: " + prediction.message + "</p>" +
+                                       "<p class='prediction'>Prediction: " + prediction.prediction + "</p>" +
+                                       "<p class='probability'>Probability: " + prediction.probability + "</p>" +
+                                       "<hr>";
+                resultDiv.appendChild(messageDiv);
+            });
+        }
+    </script>
+</body>
+</html>
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Spam/Ham Prediction</title>
     <style>
         body {
@@ -87,4 +277,4 @@
         <a href="https://github.com/" target="_blank"><img src="{{ url_for('static', filename='github.png') }}" alt="GitHub"></a>
     </div>
 </body>
-</html>
+</html> -->

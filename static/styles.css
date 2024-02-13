@@ -1,0 +1,88 @@
+body {
+    background-color: #1f1f1f;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+header {
+    width: 100%;
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+#userLogs {
+    width: 200px; /* Fixed width for the mini-aside */
+    background-color: #333;
+    padding: 10px;
+    margin-right: 20px;
+    overflow-y: auto; /* Enable scrolling if content exceeds the height */
+    height: 400px; /* Adjust height as needed */
+    color: white; /* Change text color to white */
+}
+
+#prediction {
+    width: calc(100% - 250px); /* Adjust width for the prediction area */
+    background-color: #333;
+    padding: 10px;
+    overflow-y: auto; /* Enable scrolling if content exceeds the height */
+    height: 400px; /* Adjust height as needed */
+    color: white; /* Change text color to white */
+}
+
+textarea {
+    width: 80%;
+    height: 100px;
+    resize: none;
+    margin-bottom: 20px;
+}
+
+button {
+    padding: 10px;
+    background-color: #4caf50;
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #333;
+    text-align: center;
+    padding: 10px;
+}
+
+.footer img {
+    width: 30px;
+    margin: 0 10px;
+}
+
+.message {
+    color: white; /* Change message value color to white */
+}
+
+.prediction {
+    color: red; /* Change prediction value color to red */
+}
+
+.probability {
+    color: green; /* Change probability value color to green */
+}

@@ -87,6 +87,6 @@ class ModelLoader:
             "process_path": process_path,
             "model_path": model_path
         }
-        json_path = os.path.join(CONFIG_DIR_NAME, 'model_info.json')
+        json_path = os.path.join(CONFIG_DIR_NAME, MODEL_REPORT_FILE_NAME)
         with open(json_path, "w") as json_file:
             json.dump(model_info, json_file)

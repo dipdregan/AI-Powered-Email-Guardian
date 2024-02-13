@@ -1,0 +1,21 @@
+<!-- form.html -->
+{% extends 'index.html' %}
+
+{% block header %}
+    <h1>Ham/Spam Prediction</h1>
+{% endblock %}
+
+{% block content %}
+<div id="userLogs">
+    <h2>User Prediction Logs</h2>
+    <ul id="userMessages"></ul>
+</div>
+<div id="prediction">
+    <form id="predictionForm">
+        <label for="message">Enter your message:</label><br>
+        <textarea id="message" name="message" required></textarea><br>
+        <button type="button" onclick="predict()">Predict</button>
+    </form>
+    <div id="result"></div>
+</div>
+{% endblock %}

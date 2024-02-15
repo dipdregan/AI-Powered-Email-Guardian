@@ -1,0 +1,175 @@
+body {
+    margin: 0;
+    padding: 0;
+    background: #262626;
+    font-family: Arial, sans-serif;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+h1 {
+    text-align: center;
+    font-size: 36px;
+    overflow: hidden; /* Hide overflow characters */
+    border-right: .15em solid #ffd700; /* Cursor effect */
+    white-space: nowrap; /* Prevent line breaks */
+    margin: 0 auto; /* Center the text */
+    letter-spacing: .15em; /* Adjust letter spacing for aesthetic */
+    animation: typing 3s steps(40, end);
+}
+
+#main-heading {
+    animation: typing 3s steps(40, end), glow 2s linear infinite alternate;
+}
+
+#success-heading {
+    animation: typing 3s steps(40, end), glow 2s linear infinite alternate;
+}
+
+@keyframes typing {
+    from { width: 0 }
+    to { width: 100% }
+}
+
+@keyframes glow {
+    0% {
+        text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    }
+    100% {
+        text-shadow: 0 0 20px rgba(255, 215, 0, 0.9), 0 0 30px rgba(255, 215, 0, 0.9), 0 0 40px rgba(255, 215, 0, 0.9), 0 0 50px rgba(255, 215, 0, 0.9), 0 0 60px rgba(255, 215, 0, 0.9);
+    }
+}
+
+.loading-container {
+    position: relative;
+    display: none;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.ring {
+    width: 150px;
+    height: 150px;
+    background: transparent;
+    border: 3px solid #3c3c3c;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 150px;
+    font-size: 20px;
+    color: #fff000;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    text-shadow: 0 0 10px #fff000;
+    box-shadow: 0 0 20px rgba(0, 0, 0, .5);
+    position: relative;
+}
+
+.ring:before {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    width: 100%;
+    height: 100%;
+    border: 3px solid transparent;
+    border-top: 3px solid #fff000;
+    border-right: 3px solid #fff000;
+    border-radius: 50%;
+    animation: animateC 2s linear infinite;
+}
+
+span {
+    display: block;
+    position: absolute;
+    top: calc(50% - 2px);
+    left: 50%;
+    width: 50%;
+    height: 4px;
+    background: transparent;
+    transform-origin: left;
+    animation: animate 2s linear infinite;
+}
+
+span:before {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #fff000;
+    top: -6px;
+    right: -8px;
+    box-shadow: 0 0 20px #fff000;
+}
+
+@keyframes animateC {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes animate {
+    0% {
+        transform: rotate(45deg);
+    }
+
+    100% {
+        transform: rotate(405deg);
+    }
+}
+
+#retrainButton, #goBackButton {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 20px;
+    cursor: pointer;
+    margin: 20px auto;
+    display: block;
+    border-radius: 25px; /* Adjust the value to make it more circular */
+    animation: glow 1.5s infinite alternate; /* Apply the glow animation */
+}
+
+#retrainButton:hover, #goBackButton:hover {
+    background-color: #ffc107; /* Change to yellow on hover */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15), 0 3px 6px rgba(0, 0, 0, 0.1); /* Adjust shadow for hover */
+    animation: none; /* Disable the glow animation on hover */
+}
+
+#loadingText {
+    color: #2b94c8;
+    font-size: 18px;
+    margin-top: 20px;
+    position: relative;
+}
+
+#dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background-color: #fff;
+    border-radius: 50%;
+    animation: blinkDot 1s infinite;
+    position: absolute;
+    top: 50%;
+    left: calc(100% + 4px);
+    transform: translateY(-50%);
+}
+
+@keyframes blinkDot {
+    0%, 50%, 100% {
+        opacity: 0;
+    }
+    25%, 75% {
+        opacity: 1;
+    }
+}

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ham Spam Prediction</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/predict.css') }}">
+
+</head>
+<body>
+    <header>
+        Ham Spam Prediction
+    </header>
+    <div class="container">
+        <div id="userLogs">
+            <h2>User Prediction Logs</h2>
+            <ul id="userMessages"></ul>
+        </div>
+        <div id="prediction">
+            <form id="predictionForm" action="/predict" method="post">
+                <label for="message">Enter your message:</label><br>
+                <textarea id="message" name="message" required></textarea><br>
+                <button type="button" onclick="predict()">Predict</button>
+            </form>
+            <div id="result"></div>
+        </div>
+    </div>
+
+    <div class="container" style="display: flex; justify-content: center; margin-top: 10px;">
+        <button id="goBackButton"><a href="/">Go back Home page</a></button>
+    </div>
+    
+    
+    <script>
+        function addUserMessage(message) {
+            var userMessages = document.getElementById("userMessages");
+            var li = document.createElement("li");
+            li.textContent = message;
+            userMessages.appendChild(li);
+            
+            // Remove the oldest message if there are more than four messages
+            if (userMessages.children.length > 6) {
+                userMessages.removeChild(userMessages.children[0]);
+            }
+        }
+
+        function predict() {
+            var message = document.getElementById("message").value;
+            if (message.trim() === "") {
+                alert("Please enter a message.");
+                return;
+            }
+            addUserMessage(message);
+
+            // Send message to Flask server for prediction
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    displayPredictions(response.predictions); // Update this line to correctly access predictions
+                }
+            };
+            xhr.open("POST", "/predict", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.send("message=" + encodeURIComponent(message));
+        }
+
+        function displayPredictions(predictions) {
+            var resultDiv = document.getElementById("result");
+            resultDiv.innerHTML = ""; // Clear previous predictions
+            predictions.forEach(function(prediction) {
+                var messageDiv = document.createElement("div");
+                messageDiv.innerHTML = "<p class='message'>Message: " + prediction.message + "</p>" +
+                                       "<p class='prediction'>Prediction: " + prediction.prediction + "</p>" +
+                                       "<p class='probability'>Probability: " + prediction.probability + "</p>" +
+                                       "<hr>";
+                resultDiv.appendChild(messageDiv);
+            });
+        }
+    </script>
+</body>
+</html>

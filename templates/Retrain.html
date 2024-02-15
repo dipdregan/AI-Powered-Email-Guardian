@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Retraining</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/main.css') }}">
+</head>
+<body>
+    <h1 id="main-heading">Model Retraining</h1>
+
+    <div class="loading-container">
+        <div class="ring">Model<span></span></div>
+        <div id="loadingText">Retraining Model. Please wait...<span id="dot"></span></div>
+    </div>
+
+    <button id="retrainButton">Retrain Model</button>
+
+    <div id="successMessage" style="display: none;">
+        <h1 id="success-heading">Model training is successfully completed.......!</h1>
+        <button id="goBackButton"><a href="/">Go back Home page</a></button>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#retrainButton").click(function() {
+                // Hide the button
+                $(this).hide();
+                
+                // Show the loading container
+                $(".loading-container").show();
+                
+                $.ajax({
+                    type: "POST",
+                    url: "/train_model",
+                    success: function(response) {
+                        $(".loading-container").hide();
+                        $(".ring").css("border-color", "#28a745");
+                        // Show the success message
+                        $("#successMessage").show();
+                    },
+                    error: function(error) {
+                        console.error("Error:", error);
+                        $(".loading-container").hide();
+                    }
+                });
+            });
+
+            $("#goBackButton").click(function() {
+                // Redirect to the home page
+                window.location.href = "/";
+            });
+        });
+    </script>
+</body>
+</html>

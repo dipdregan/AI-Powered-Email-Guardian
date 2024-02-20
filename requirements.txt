@@ -13,5 +13,6 @@ kaggle
 types-PyYAML
 pyYAML
 python-dotenv
+flask
 boto3
-# -e .
+-e .

@@ -8,9 +8,9 @@ venv
 *.pyc
 *.log
 *.csv
-*.json
 *.csv
 *.png
+artifact/
 *.pkl
 *.h5
 *.npy

@@ -18,7 +18,7 @@ class S3_operation:
                                       aws_secret_access_key=self.aws_secret_access_key,
                                       region_name=self.aws_region)
         
-    def accessing_path_s3(self, model_path):
+    def accessing_path_s3(self, model_path=S3_NEW_VERSION):
         file_paths = []
         response = self.s3_client.list_objects_v2(Bucket=self.bucket_name,
                                                   Prefix=model_path + '/')

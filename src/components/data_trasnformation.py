@@ -13,9 +13,9 @@ from src.utils.utils import *
 import numpy as np
 
 
-# nltk.download('punkt')
-# nltk.download('stopwords')
-# nltk.download('wordnet')
+nltk.download('punkt')
+nltk.download('stopwords')
+nltk.download('wordnet')
 
 
 class DataTransformation:

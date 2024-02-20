@@ -1,0 +1,27 @@
+# Ignore the artifact folder
+artifact/
+
+# Ignore the env folder
+env/
+
+# Ignore .env files
+.env
+
+# Ignore README.md file
+README.md
+# Ignore templates.py file
+templates.py
+
+# Ignore testing.py, testing1.py, and new_testing.py files
+testing.py
+testing1.py
+new_testing.py
+
+# Ignore the log folder
+log/
+
+# Ignore research folder
+research/
+*.jpg
+*.jpeg
+*.png

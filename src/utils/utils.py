@@ -102,7 +102,7 @@ def data_cleaning(text: str) -> str:
     6. Lemmatizing the words in to root word
     """
     text = text.lower()
-    for short_form, full_form in short_forms.items():
+    for short_form, full_form in short_forms.items(): 
         text = re.sub(r'\b{}\b'.format(re.escape(short_form)), full_form, text)
         
     text = emoji_pattern.sub(r'', text)

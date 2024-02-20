@@ -93,6 +93,8 @@ class ModelLoader:
 
 
     def initiate_model_pusher(self):
+        logging.info("============================================================================")
+        logging.info("=========================  Start MODEL Pusher into S3 BUcket ==============")
         process_path = self.uploading_process_pkl()
         model_path = self.upload_or_reject_model()
 
@@ -103,6 +105,8 @@ class ModelLoader:
         json_path = os.path.join(CONFIG_DIR_NAME, MODEL_REPORT_FILE_NAME)
         with open(json_path, "w") as json_file:
             json.dump(model_info, json_file)
+        logging.info("=========================   MODEL Pusher Completed... ==============")
+        
 
 
 # import os

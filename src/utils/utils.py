@@ -102,14 +102,14 @@ def data_cleaning(text: str) -> str:
     6. Lemmatizing the words in to root word
     """
     text = text.lower()
-    for short_form, full_form in short_forms.items(): 
+    for short_form, full_form in short_forms.items():
         text = re.sub(r'\b{}\b'.format(re.escape(short_form)), full_form, text)
         
     text = emoji_pattern.sub(r'', text)
     text = re.sub(r'[^a-zA-Z0-9\s]', '', text)
     stop_words = set(stopwords.words('english'))
     
-    stemmer = SnowballStemmer("english")
+    stemmer = SnowballStemmer("english") 
     
     words = [stemmer.stem(word) for word in word_tokenize(text) if word.lower() not in stop_words]
     

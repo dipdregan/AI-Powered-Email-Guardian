@@ -74,6 +74,7 @@ class DataIngestion:
             print(data_ingestion_artifact)
             logging.info(f"{30*'===='}")
             logging.info(f"{10*'=='}Data Ingestion Completed...{10*'=='}")
+            
             logging.info(f"{30*'===='}")
 
             return data_ingestion_artifact

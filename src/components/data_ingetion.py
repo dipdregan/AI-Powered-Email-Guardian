@@ -66,15 +66,16 @@ class DataIngestion:
             logging.info(f"Unzip the data in to{self.data_ingestion_config.unzip_file_path} ")
             unzip_file_path = self.unziping_the_data()
             logging.info(f"data stored in {unzip_file_path}")
-            logging.info(f"{30*'===='}")
-            logging.info(f"{10*'=='}Data Ingestion Completed...{10*'=='}")
-            logging.info(f"{30*'===='}")
-
+            
             data_ingestion_artifact = DataIngestionArtifact(
                 unzip_data_file_path=unzip_file_path,
                 zip_data_file_path=zip_file_path
             )
             print(data_ingestion_artifact)
+            logging.info(f"{30*'===='}")
+            logging.info(f"{10*'=='}Data Ingestion Completed...{10*'=='}")
+            logging.info(f"{30*'===='}")
+
             return data_ingestion_artifact
         except Exception as e:
             raise ham_spam(e, sys) from e

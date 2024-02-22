@@ -165,7 +165,7 @@ body {
 }
 
 .footer a {
-    color: white;
+    color: rgba(59, 197, 207, 0.926);
     text-decoration: none;
     margin: 0 10px;
 }

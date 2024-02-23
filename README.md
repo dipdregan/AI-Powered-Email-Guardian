@@ -6,6 +6,22 @@
 ## Description
 The Ham-Spam Classifier is a machine learning project designed to classify SMS messages as either "ham" (legitimate) or "spam" (unsolicited). It utilizes various natural language processing (NLP) techniques and machine learning algorithms to achieve accurate classification.
 
+## Project pages
+### Home Page
+![Screenshot (326)](https://github.com/dipdregan/Ham_Spam_Classifier-ETE-/assets/58151564/b4ace62a-f41a-4f49-99d0-1ec5d6ae985b)
+
+### prediction page
+![Screenshot (330)](https://github.com/dipdregan/Ham_Spam_Classifier-ETE-/assets/58151564/f0d04ba1-0ef5-43d0-a417-0e4d67144d3a)
+
+### Retaining Page
+![Screenshot (320)](https://github.com/dipdregan/Ham_Spam_Classifier-ETE-/assets/58151564/7923957a-cabd-45fb-a4fc-aa15d9ae3467)
+
+#### Retrain_model
+![Screenshot (332)](https://github.com/dipdregan/Ham_Spam_Classifier-ETE-/assets/58151564/4fc25a75-d932-41d2-9a2d-72323dea1201)
+
+
+
+
 ## Installation
 To install the Ham-Spam Classifier, follow these steps:
 
